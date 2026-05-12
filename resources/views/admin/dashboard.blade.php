@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Dashboard Admin')
-@section('page-title', '🛡️ Dashboard Admin')
+@section('page-title', 'Dashboard Admin')
 @section('page-subtitle', 'Ringkasan sistem E-Rapot SMPN 1 Surabaya')
 
 @section('sidebar-nav')
@@ -12,42 +12,42 @@
 
 {{-- ── Stat Cards ── --}}
 <div class="stat-grid stat-grid-4">
-    <div class="stat-card" style="--card-accent: linear-gradient(90deg,#4f46e5,#818cf8)">
+    <div class="stat-card">
         <div class="stat-label">Total Siswa</div>
         <div class="stat-value">{{ number_format($stats['total_siswa']) }}</div>
         <div class="stat-sub">Terdaftar aktif</div>
-        <div class="stat-icon">🎓</div>
+        <div class="stat-icon-bg"><i data-lucide="user-round"></i></div>
     </div>
-    <div class="stat-card" style="--card-accent: linear-gradient(90deg,#06b6d4,#22d3ee)">
+    <div class="stat-card">
         <div class="stat-label">Total Guru</div>
         <div class="stat-value">{{ number_format($stats['total_guru']) }}</div>
         <div class="stat-sub">Pengajar aktif</div>
-        <div class="stat-icon">👨‍🏫</div>
+        <div class="stat-icon-bg"><i data-lucide="users"></i></div>
     </div>
-    <div class="stat-card" style="--card-accent: linear-gradient(90deg,#10b981,#34d399)">
+    <div class="stat-card">
         <div class="stat-label">Total Kelas</div>
         <div class="stat-value">{{ number_format($stats['total_kelas']) }}</div>
         <div class="stat-sub">Semester aktif</div>
-        <div class="stat-icon">🏫</div>
+        <div class="stat-icon-bg"><i data-lucide="school"></i></div>
     </div>
-    <div class="stat-card" style="--card-accent: linear-gradient(90deg,#f59e0b,#fbbf24)">
+    <div class="stat-card">
         <div class="stat-label">Total Nilai</div>
         <div class="stat-value">{{ number_format($stats['total_nilai']) }}</div>
         <div class="stat-sub">
-            <span style="color:#6ee7b7">✓ {{ number_format($stats['nilai_final']) }} final</span>
-            · {{ number_format($stats['nilai_draft']) }} draft
+            <span class="trend-up">✓ {{ number_format($stats['nilai_final']) }} final</span>
+            <span style="color:var(--text-muted)">· {{ number_format($stats['nilai_draft']) }} draft</span>
         </div>
-        <div class="stat-icon">📝</div>
+        <div class="stat-icon-bg"><i data-lucide="file-check"></i></div>
     </div>
 </div>
 
 {{-- ── Row 2: Distribusi Predikat + Top Siswa ── --}}
-<div class="grid-2" style="margin-bottom:1rem">
+<div class="grid-2" style="margin-bottom:1.5rem">
 
     {{-- Distribusi Predikat --}}
     <div class="panel">
         <div class="panel-header">
-            <span class="panel-title">📊 Distribusi Predikat Nilai</span>
+            <span class="panel-title"><i data-lucide="pie-chart" style="width:18px"></i> Distribusi Predikat Nilai</span>
         </div>
         <div class="panel-body">
             @php
@@ -56,15 +56,15 @@
             @endphp
             @foreach(['A','B','C','D'] as $p)
                 @php $jml = $distribusiPredikat[$p] ?? 0; $pct = $totalNilai ? round($jml/$totalNilai*100) : 0; @endphp
-                <div style="margin-bottom:1rem">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem">
-                        <div style="display:flex;align-items:center;gap:0.5rem">
+                <div style="margin-bottom:1.25rem">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem">
+                        <div style="display:flex;align-items:center;gap:0.75rem">
                             <span class="badge badge-{{ $p }}">{{ $p }}</span>
-                            <span style="font-size:0.8rem;color:var(--text-soft)">
+                            <span style="font-size:0.875rem;font-weight:600;color:var(--text-soft)">
                                 {{ ['A'=>'Sangat Baik','B'=>'Baik','C'=>'Cukup','D'=>'Perlu Bimbingan'][$p] }}
                             </span>
                         </div>
-                        <span style="font-size:0.8rem;color:var(--text-muted)">{{ number_format($jml) }} ({{ $pct }}%)</span>
+                        <span style="font-size:0.85rem;font-weight:700;color:var(--text-muted)">{{ number_format($jml) }} ({{ $pct }}%)</span>
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width:{{ $pct }}%;background:{{ $warna[$p] }}"></div>
@@ -77,7 +77,7 @@
     {{-- Top 5 Siswa --}}
     <div class="panel">
         <div class="panel-header">
-            <span class="panel-title">🏆 Top 5 Siswa</span>
+            <span class="panel-title"><i data-lucide="trophy" style="width:18px"></i> Top 5 Siswa</span>
         </div>
         <div class="table-wrap">
             <table>
@@ -92,11 +92,11 @@
                     @foreach($topSiswa as $i => $row)
                     <tr>
                         <td>
-                            <span style="font-weight:700;color:{{ ['#fbbf24','#94a3b8','#cd7c54'][$i] ?? 'var(--text-muted)' }}">
+                            <span style="font-weight:800;color:{{ ['#fbbf24','#94a3b8','#cd7c54'][$i] ?? 'var(--text-muted)' }}">
                                 {{ $i + 1 }}
                             </span>
                         </td>
-                        <td style="font-weight:500;color:var(--text)">{{ $row->siswa?->nama_lengkap ?? '-' }}</td>
+                        <td style="font-weight:700;color:var(--text)">{{ $row->siswa?->nama_lengkap ?? '-' }}</td>
                         <td>
                             <span class="badge badge-{{ $row->rata_rata >= 90 ? 'A' : ($row->rata_rata >= 80 ? 'B' : ($row->rata_rata >= 70 ? 'C' : 'D')) }}">
                                 {{ number_format($row->rata_rata, 1) }}
@@ -115,17 +115,17 @@
     {{-- Top Kelas --}}
     <div class="panel">
         <div class="panel-header">
-            <span class="panel-title">🏫 Rata-rata Nilai Per Kelas</span>
+            <span class="panel-title"><i data-lucide="school" style="width:18px"></i> Rata-rata Nilai Per Kelas</span>
         </div>
         <div class="table-wrap">
             <table>
-                <thead><tr><th>Kelas</th><th>Rata-rata</th><th>Bar</th></tr></thead>
+                <thead><tr><th>Kelas</th><th>Rata-rata</th><th>Progres</th></tr></thead>
                 <tbody>
                     @foreach($topKelas as $row)
                     <tr>
-                        <td style="font-weight:600;color:var(--text)">{{ $row->kelas?->nama_kelas ?? '-' }}</td>
+                        <td style="font-weight:700;color:var(--text)">{{ $row->kelas?->nama_kelas ?? '-' }}</td>
                         <td><span class="badge badge-B">{{ number_format($row->rata_rata, 1) }}</span></td>
-                        <td style="width:100px">
+                        <td style="width:120px">
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width:{{ min(100,round($row->rata_rata)) }}%"></div>
                             </div>
@@ -140,7 +140,7 @@
     {{-- Recent Users --}}
     <div class="panel">
         <div class="panel-header">
-            <span class="panel-title">👥 Akun Terbaru</span>
+            <span class="panel-title"><i data-lucide="users-2" style="width:18px"></i> Akun Terbaru</span>
         </div>
         <div class="table-wrap">
             <table>
@@ -148,7 +148,7 @@
                 <tbody>
                     @foreach($recentUsers as $u)
                     <tr>
-                        <td style="color:var(--text);font-weight:500">{{ $u->name }}</td>
+                        <td style="color:var(--text);font-weight:700">{{ $u->name }}</td>
                         <td>
                             <span class="badge {{ $u->role==='admin' ? 'badge-info' : ($u->role==='guru' ? 'badge-success' : 'badge-warning') }}">
                                 {{ ucfirst($u->role) }}
