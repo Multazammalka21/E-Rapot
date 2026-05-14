@@ -40,8 +40,7 @@ class EkstrakurikulerSeeder extends Seeder
         $batch    = [];
 
         foreach ($siswaIds as $siswaId) {
-            if (rand(0, 1) === 0) continue; // ~50% ikut ekskul
-
+            // Semua siswa diwajibkan ikut minimal 1 ekskul
             $jumlah = rand(1, 2);
             $picked = (array) array_rand(array_flip($ekskulIds), $jumlah);
 

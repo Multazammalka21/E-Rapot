@@ -24,6 +24,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('siswa', \App\Http\Controllers\Admin\SiswaController::class)->except('show');
     Route::resource('kelas', \App\Http\Controllers\Admin\KelasController::class)->except('show');
     Route::resource('mapel', \App\Http\Controllers\Admin\MataPelajaranController::class)->except('show');
+    Route::post('ekstrakurikuler/{ekstrakurikuler}/anggota', [\App\Http\Controllers\Admin\EkstrakurikulerController::class, 'tambahAnggota'])->name('ekstrakurikuler.tambah-anggota');
+    Route::delete('ekstrakurikuler/{ekstrakurikuler}/anggota/{id}', [\App\Http\Controllers\Admin\EkstrakurikulerController::class, 'hapusAnggota'])->name('ekstrakurikuler.hapus-anggota');
+    Route::resource('ekstrakurikuler', \App\Http\Controllers\Admin\EkstrakurikulerController::class);
+    Route::resource('tahun-ajaran', \App\Http\Controllers\Admin\TahunAjaranController::class)->except('show');
+    Route::get('/nilai', [\App\Http\Controllers\Admin\NilaiController::class, 'index'])->name('nilai.index');
 });
 
 // ── Guru Routes ────────────────────────────────────────────────────────────

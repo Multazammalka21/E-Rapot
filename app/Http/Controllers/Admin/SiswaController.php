@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Siswa;
 use App\Models\User;
+use App\Models\TahunAjaran;
+use App\Models\Ekstrakurikuler;
+use App\Models\EkstrakurikulerSiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -66,10 +69,23 @@ class SiswaController extends Controller
             $userId = $user->id;
         }
 
-        Siswa::create(array_merge(
+        $siswa = Siswa::create(array_merge(
             collect($data)->except(['buat_akun','email','password'])->toArray(),
             ['user_id' => $userId]
         ));
+
+        // Otomatis daftar ke Pramuka (atau ekskul pertama) agar setiap siswa punya minimal 1 ekskul
+        $ta = TahunAjaran::where('is_active', true)->first();
+        $ekskulDefault = Ekstrakurikuler::where('nama', 'like', '%Pramuka%')->first() ?? Ekstrakurikuler::first();
+        if ($ta && $ekskulDefault) {
+            EkstrakurikulerSiswa::create([
+                'siswa_id'           => $siswa->id,
+                'ekstrakurikuler_id' => $ekskulDefault->id,
+                'tahun_ajaran_id'    => $ta->id,
+                'predikat'           => null,
+                'keterangan'         => 'Otomatis terdaftar',
+            ]);
+        }
 
         return redirect()->route('admin.siswa.index')
             ->with('success', "Siswa {$data['nama_lengkap']} berhasil ditambahkan.");

@@ -21,9 +21,9 @@
 </a>
 
 <div class="nav-section-title">Akademik</div>
-<a href="#" class="nav-item"><i data-lucide="file-text" class="nav-icon"></i> Nilai Siswa</a>
-<a href="#" class="nav-item"><i data-lucide="calendar-days" class="nav-icon"></i> Tahun Ajaran</a>
-<a href="#" class="nav-item"><i data-lucide="award" class="nav-icon"></i> Ekstrakurikuler</a>
+<a href="{{ route('admin.nilai.index') }}" class="nav-item {{ request()->routeIs('admin.nilai.*') ? 'active' : '' }}"><i data-lucide="file-text" class="nav-icon"></i> Nilai Siswa</a>
+<a href="{{ route('admin.tahun-ajaran.index') }}" class="nav-item {{ request()->routeIs('admin.tahun-ajaran.*') ? 'active' : '' }}"><i data-lucide="calendar-days" class="nav-icon"></i> Tahun Ajaran</a>
+<a href="{{ route('admin.ekstrakurikuler.index') }}" class="nav-item {{ request()->routeIs('admin.ekstrakurikuler.*') ? 'active' : '' }}"><i data-lucide="award" class="nav-icon"></i> Ekstrakurikuler</a>
 
 <div class="nav-section-title">Laporan</div>
 <a href="#" class="nav-item"><i data-lucide="printer" class="nav-icon"></i> Cetak Rapot PDF</a>

@@ -46,7 +46,7 @@
 
         /* ══ SIDEBAR ══════════════════════════════════════════════════ */
         .sidebar {
-            width: var(--sidebar-w); min-height: 100vh; background: var(--sidebar-bg);
+            width: var(--sidebar-w); height: 100vh; background: var(--sidebar-bg);
             border-right: 1px solid var(--border); position: fixed; left: 0; top: 0; z-index: 100;
             display: flex; flex-direction: column; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
