@@ -40,7 +40,7 @@
                     </td>
                     <td>
                         @if($e->pembina)
-                            <span style="color:var(--text-soft);font-size:0.85rem">{{ $e->pembina->nama }}</span>
+                            <span style="color:var(--text-soft);font-size:0.85rem">{{ $e->pembina->nama_gelar }}</span>
                         @else
                             <span style="color:var(--text-muted);font-size:0.85rem;font-style:italic">Belum ada pembina</span>
                         @endif

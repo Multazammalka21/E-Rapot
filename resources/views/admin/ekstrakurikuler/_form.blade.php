@@ -35,7 +35,7 @@
             <option value="">-- Pilih Pembina --</option>
             @foreach($gurus as $guru)
                 <option value="{{ $guru->id }}" {{ old('pembina_id', $isEdit ? $ekstrakurikuler->pembina_id : '') == $guru->id ? 'selected' : '' }}>
-                    {{ $guru->nama }}
+                    {{ $guru->nama_gelar }}
                 </option>
             @endforeach
         </select>
