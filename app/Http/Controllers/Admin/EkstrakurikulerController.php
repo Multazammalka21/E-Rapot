@@ -24,7 +24,7 @@ class EkstrakurikulerController extends Controller
 
     public function create()
     {
-        $gurus = Guru::orderBy('nama')->get();
+        $gurus = Guru::orderBy('nama_lengkap')->get();
         return view('admin.ekstrakurikuler.create', compact('gurus'));
     }
 
@@ -46,7 +46,7 @@ class EkstrakurikulerController extends Controller
 
     public function edit(Ekstrakurikuler $ekstrakurikuler)
     {
-        $gurus = Guru::orderBy('nama')->get();
+        $gurus = Guru::orderBy('nama_lengkap')->get();
         return view('admin.ekstrakurikuler.edit', compact('ekstrakurikuler', 'gurus'));
     }
 
