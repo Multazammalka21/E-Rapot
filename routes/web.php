@@ -45,6 +45,11 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
     Route::get('/rapot/{siswa}/preview', [\App\Http\Controllers\Guru\RapotController::class, 'preview'])->name('rapot.preview');
     Route::get('/rapot/{siswa}/cetak', [\App\Http\Controllers\Guru\RapotController::class, 'cetak'])->name('rapot.cetak');
 
+    // Wali Kelas (Absensi & Catatan)
+    Route::get('/walikelas', [\App\Http\Controllers\Guru\WaliKelasController::class, 'index'])->name('walikelas.index');
+    Route::get('/walikelas/{kelas}/input', [\App\Http\Controllers\Guru\WaliKelasController::class, 'input'])->name('walikelas.input');
+    Route::post('/walikelas/{kelas}/store', [\App\Http\Controllers\Guru\WaliKelasController::class, 'store'])->name('walikelas.store');
+
     // Import Nilai Excel
     Route::get('/import', [\App\Http\Controllers\Guru\ImportNilaiController::class, 'index'])->name('import.index');
     Route::get('/import/template/{kelas}/{mapel}', [\App\Http\Controllers\Guru\ImportNilaiController::class, 'template'])->name('import.template');

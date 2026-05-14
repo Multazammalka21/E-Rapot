@@ -9,6 +9,11 @@
     <i data-lucide="file-edit" class="nav-icon"></i> Input Nilai
 </a>
 
+<div class="nav-section-title">Wali Kelas</div>
+<a href="{{ route('guru.walikelas.index') }}" class="nav-item {{ request()->routeIs('guru.walikelas.*') ? 'active' : '' }}">
+    <i data-lucide="users" class="nav-icon"></i> Absensi & Catatan
+</a>
+
 <div class="nav-section-title">Rapot</div>
 <a href="{{ route('guru.rapot.index') }}" class="nav-item {{ request()->routeIs('guru.rapot.*') ? 'active' : '' }}">
     <i data-lucide="printer" class="nav-icon"></i> Cetak Rapot PDF
