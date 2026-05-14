@@ -134,6 +134,13 @@
         }
         .form-input.is-invalid { border-color: var(--danger); }
 
+        .password-toggle {
+            position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: var(--text-muted); cursor: pointer;
+            padding: 0; display: flex; align-items: center; justify-content: center;
+        }
+        .password-toggle:hover { color: var(--primary); }
+
         /* ── Remember ── */
         .form-extras {
             display: flex; align-items: center; justify-content: space-between;
@@ -269,6 +276,9 @@
                             autocomplete="current-password"
                             required
                         >
+                        <button type="button" id="togglePassword" class="password-toggle" title="Tampilkan/Sembunyikan password">
+                            <i data-lucide="eye" id="toggleIcon"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -317,6 +327,33 @@
             document.getElementById('email').value = email;
             document.getElementById('password').value = pass;
             document.getElementById('email').focus();
+        }
+
+        // Toggle show/hide password
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        });
+
+        // Auto-hide success messages after 3 seconds
+        const successAlerts = document.querySelectorAll('.alert-success');
+        if (successAlerts.length > 0) {
+            setTimeout(() => {
+                successAlerts.forEach(alert => {
+                    alert.style.transition = 'opacity 0.5s ease';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500); // remove element after transition
+                });
+            }, 3000);
         }
 
         document.getElementById('loginForm').addEventListener('submit', function() {
