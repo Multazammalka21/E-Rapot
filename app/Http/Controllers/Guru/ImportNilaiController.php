@@ -70,7 +70,8 @@ class ImportNilaiController extends Controller
         }
         $writer->close();
 
-        $filename = "Template_Nilai_{$kelas->nama_kelas}_{$mapel->kode_mapel}_{$ta->nama}.xlsx";
+        $safeTaName = str_replace(['/', '\\'], '-', $ta->nama);
+        $filename = "Template_Nilai_{$kelas->nama_kelas}_{$mapel->kode_mapel}_{$safeTaName}.xlsx";
         return response()->download($tmpFile, $filename)->deleteFileAfterSend(true);
     }
 

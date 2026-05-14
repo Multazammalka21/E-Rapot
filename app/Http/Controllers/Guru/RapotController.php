@@ -70,7 +70,9 @@ class RapotController extends Controller
             ->setPaper('A4', 'portrait')
             ->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif', 'isHtml5ParserEnabled' => true]);
 
-        $filename = 'Rapot_' . str_replace(' ', '_', $siswa->nama_lengkap) . '_' . $ta->nama . '.pdf';
+        $safeTaName = str_replace(['/', '\\'], '-', $ta->nama);
+        $safeSiswaName = str_replace(['/', '\\', ' '], '_', $siswa->nama_lengkap);
+        $filename = 'Rapot_' . $safeSiswaName . '_' . $safeTaName . '.pdf';
         return $pdf->download($filename);
     }
 
