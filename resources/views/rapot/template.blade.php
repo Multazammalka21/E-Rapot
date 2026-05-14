@@ -5,20 +5,20 @@
 <title>Rapot — {{ $siswa->nama_lengkap }}</title>
 <style>
     :root {
-        --primary: #1a237e;
-        --primary-light: #283593;
-        --text-main: #1a1a1a;
-        --text-muted: #555;
-        --text-light: #888;
-        --text-dark: #333;
-        --border-color: #9fa8da;
-        --border-light: #c5cae9;
-        --bg-light: #f8f9ff;
-        --bg-header: #e8eaf6;
-        --border-box: #aaa;
-        --border-footer: #ddd;
-        --green-dark: #1b5e20;
-        --red-dark: #b71c1c;
+        --primary: #1e3a8a;
+        --primary-light: #2563eb;
+        --text-main: #0f172a;
+        --text-muted: #475569;
+        --text-light: #64748b;
+        --text-dark: #020617;
+        --border-color: #cbd5e1;
+        --border-light: #e2e8f0;
+        --bg-light: #f8fafc;
+        --bg-header: #f1f5f9;
+        --border-box: #cbd5e1;
+        --border-footer: #e2e8f0;
+        --green-dark: #15803d;
+        --red-dark: #b91c1c;
     }
 
     /* ── CETAK ── */
@@ -38,7 +38,7 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 9.5pt;
         color: var(--text-main);
         background: #fff;
@@ -65,79 +65,86 @@
     }
 
     /* ── HEADER SEKOLAH ── */
-    .school-header { border: 2px solid var(--primary); border-radius: 4px; margin-bottom: 4mm; }
-    .school-header-inner { display: table; width: 100%; padding: 5px 10px; }
+    .school-header { 
+        margin-bottom: 5mm; 
+        border-bottom: 3px double var(--primary); 
+        padding-bottom: 8px; 
+    }
+    .school-header-inner { display: table; width: 100%; }
 
-    .school-logo { display: table-cell; width: 52px; vertical-align: middle; text-align: center; }
+    .school-logo { display: table-cell; width: 60px; vertical-align: middle; text-align: center; }
     /* Logo: lingkaran teks — tidak pakai emoji, tidak pakai gradient (buruk di PDF) */
     .school-logo-circle {
-        width: 46px; height: 46px; border-radius: 50%;
-        background: var(--primary);
+        width: 48px; height: 48px; border-radius: 50%;
+        background: transparent;
         display: flex; align-items: center; justify-content: center;
-        font-size: 13px; font-weight: bold; color: white;
+        font-size: 14px; font-weight: bold; color: var(--primary);
         margin: 0 auto; letter-spacing: -0.5px;
-        border: 2px solid var(--primary-light);
+        border: 2px solid var(--primary);
     }
 
     .school-info { display: table-cell; vertical-align: middle; text-align: center; padding: 0 10px; }
-    .school-info .prov { font-size: 7.5pt; color: var(--text-muted); }
-    .school-info .name { font-size: 14pt; font-weight: bold; color: var(--primary); letter-spacing: 0.5px; margin: 1px 0; }
-    .school-info .addr { font-size: 7.5pt; color: var(--text-muted); }
-    .school-info .npsn { font-size: 7.5pt; color: var(--text-light); margin-top: 1px; }
+    .school-info .prov { font-size: 8pt; color: var(--text-muted); font-weight: bold; letter-spacing: 0.5px; }
+    .school-info .name { font-size: 16pt; font-weight: bold; color: var(--primary); letter-spacing: 0.5px; margin: 2px 0; }
+    .school-info .addr { font-size: 8pt; color: var(--text-muted); }
+    .school-info .npsn { font-size: 7.5pt; color: var(--text-light); margin-top: 2px; }
 
     .school-badge { display: table-cell; width: 72px; vertical-align: middle; text-align: center; }
     .rapot-badge {
-        background: var(--primary); color: white; border-radius: 4px;
-        padding: 5px 7px; font-size: 9pt; font-weight: bold; letter-spacing: 0.5px;
+        background: white; color: var(--primary); border: 1px solid var(--primary); border-radius: 4px;
+        padding: 4px 6px; font-size: 9pt; font-weight: bold; letter-spacing: 0.5px;
         display: inline-block;
     }
-    .rapot-badge small { display: block; font-size: 6.5pt; font-weight: normal; margin-top: 2px; }
+    .rapot-badge small { display: block; font-size: 6.5pt; font-weight: normal; margin-top: 1px; color: var(--text-muted); }
 
     /* ── JUDUL ── */
-    .rapot-title { text-align: center; margin-bottom: 4mm; }
+    .rapot-title { text-align: center; margin-bottom: 5mm; }
     .rapot-title h2 {
-        font-size: 12pt; font-weight: bold; color: var(--primary);
-        text-transform: uppercase; letter-spacing: 1px;
+        font-size: 12pt; font-weight: bold; color: var(--text-main);
+        text-transform: uppercase; letter-spacing: 1.5px;
     }
     .rapot-title p { font-size: 9pt; color: var(--text-muted); margin-top: 2px; }
 
     /* ── DATA SISWA ── */
     .student-info {
-        border: 1px solid var(--border-box);
-        border-radius: 3px;
-        margin-bottom: 4mm;
-        padding: 6px 10px;
+        background: var(--bg-light);
+        border-left: 3px solid var(--primary);
+        border-right: 1px solid var(--border-light);
+        border-top: 1px solid var(--border-light);
+        border-bottom: 1px solid var(--border-light);
+        border-radius: 2px;
+        margin-bottom: 5mm;
+        padding: 8px 12px;
     }
     .info-grid { display: table; width: 100%; }
     .info-col { display: table-cell; width: 50%; vertical-align: top; }
     .info-col:first-child { padding-right: 12px; }
-    .info-row { margin-bottom: 2px; font-size: 8.5pt; }
-    .info-label { color: var(--text-muted); display: inline-block; min-width: 95px; }
+    .info-row { margin-bottom: 3px; font-size: 8.5pt; }
+    .info-label { color: var(--text-muted); display: inline-block; min-width: 100px; }
     .info-colon { display: inline-block; width: 8px; }
     .info-value { font-weight: bold; color: var(--text-main); }
 
     /* ── RINGKASAN ── */
-    .summary-row { display: table; width: 100%; margin-bottom: 4mm; }
+    .summary-row { display: table; width: 100%; margin-bottom: 5mm; border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; }
     .summary-box {
         display: table-cell;
-        border: 1px solid var(--border-color);
-        padding: 6px 8px;
-        background: var(--bg-light);
+        padding: 8px;
         text-align: center;
         vertical-align: middle;
         width: 25%;
+        border-right: 1px solid var(--border-light);
     }
-    .summary-box + .summary-box { border-left: none; }
-    .summary-box .s-label { font-size: 7pt; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 3px; }
-    .summary-box .s-value { font-size: 17pt; font-weight: bold; color: var(--primary); line-height: 1.2; }
+    .summary-box:last-child { border-right: none; }
+    .summary-box .s-label { font-size: 7.5pt; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-weight: bold; }
+    .summary-box .s-value { font-size: 16pt; font-weight: bold; color: var(--primary); line-height: 1.2; }
     .summary-box .s-sub { font-size: 7pt; color: var(--text-light); margin-top: 2px; }
 
     /* ── SECTION TITLE ── */
     .section-title {
-        background: var(--primary); color: white;
+        background: var(--bg-header); color: var(--primary);
         font-size: 9pt; font-weight: bold;
-        padding: 4px 8px;
-        border-radius: 2px 2px 0 0;
+        padding: 5px 10px;
+        border-left: 4px solid var(--primary);
         text-transform: uppercase; letter-spacing: 0.5px;
         margin-bottom: 0;
     }
@@ -145,59 +152,57 @@
     /* ── TABEL NILAI ── */
     .nilai-table {
         width: 100%; border-collapse: collapse;
-        font-size: 8.5pt; margin-bottom: 4mm;
-        table-layout: fixed;
+        font-size: 8.5pt; margin-bottom: 5mm;
+        table-layout: fixed; border: 1px solid var(--border-color);
     }
     .nilai-table th {
-        background: var(--bg-header); color: var(--primary); font-weight: bold;
-        padding: 4px 3px; border: 1px solid var(--border-color);
-        text-align: center; vertical-align: middle;
+        background: var(--bg-light); color: var(--text-main); font-weight: bold;
+        padding: 6px 4px; border: 1px solid var(--border-color);
+        text-align: center; vertical-align: middle; font-size: 8pt; text-transform: uppercase; letter-spacing: 0.5px;
     }
-    .nilai-table th.left { text-align: left; padding-left: 5px; }
+    .nilai-table th.left { text-align: left; padding-left: 6px; }
     .nilai-table td {
-        padding: 3px 4px; border: 1px solid var(--border-light);
+        padding: 4px 5px; border: 1px solid var(--border-light);
         vertical-align: top; word-wrap: break-word; overflow-wrap: break-word;
     }
-    .nilai-table tr:nth-child(even) td { background: var(--bg-light); }
-    /* Hapus hover — tidak berguna di PDF dan bisa membingungkan di print */
+    .nilai-table tr:nth-child(even) td { background: #fafbfc; }
 
     /* Lebar kolom eksplisit agar tidak ada kolom yang meluber */
-    .col-no      { width: 22px;  text-align: center; }
-    .col-kode    { width: 40px;  text-align: center; font-weight: bold; }
-    .col-mapel   { width: 18%; }
-    .col-num     { width: 30px;  text-align: center; }
-    .col-predikat{ width: 28px;  text-align: center; font-weight: bold; }
+    .col-no      { width: 25px;  text-align: center; }
+    .col-kode    { width: 45px;  text-align: center; font-weight: bold; }
+    .col-mapel   { width: 20%; }
+    .col-num     { width: 35px;  text-align: center; }
+    .col-predikat{ width: 35px;  text-align: center; font-weight: bold; }
     .col-capaian { /* sisa lebar otomatis */ }
-    .catatan-td  { font-size: 7.8pt; color: var(--text-dark); font-style: italic; line-height: 1.35; vertical-align: top; }
+    .catatan-td  { font-size: 8pt; color: var(--text-dark); line-height: 1.4; vertical-align: top; }
 
-    .predikat-A { color: #1b5e20; background: #e8f5e9; border-radius: 3px; padding: 1px 4px; display: inline-block; }
-    .predikat-B { color: #0d47a1; background: #e3f2fd; border-radius: 3px; padding: 1px 4px; display: inline-block; }
-    .predikat-C { color: #e65100; background: #fff3e0; border-radius: 3px; padding: 1px 4px; display: inline-block; }
-    .predikat-D { color: #b71c1c; background: #ffebee; border-radius: 3px; padding: 1px 4px; display: inline-block; }
+    .predikat-A { color: #15803d; font-weight: bold; }
+    .predikat-B { color: #1d4ed8; font-weight: bold; }
+    .predikat-C { color: #b45309; font-weight: bold; }
+    .predikat-D { color: #b91c1c; font-weight: bold; }
 
     /* ── TABEL ABSENSI ── */
-    .absensi-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-bottom: 4mm; }
+    .absensi-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-bottom: 5mm; border: 1px solid var(--border-color); }
     .absensi-table th {
-        background: var(--bg-header); color: var(--primary);
-        border: 1px solid var(--border-color); padding: 4px 6px; text-align: center;
+        background: var(--bg-light); color: var(--text-main); font-weight: bold; text-transform: uppercase; font-size: 8pt; letter-spacing: 0.5px;
+        border: 1px solid var(--border-color); padding: 5px 6px; text-align: center;
     }
-    .absensi-table td { border: 1px solid var(--border-light); padding: 4px 6px; text-align: center; }
+    .absensi-table td { border: 1px solid var(--border-light); padding: 5px 6px; text-align: center; }
 
     /* ── TABEL EKSKUL ── */
-    .ekskul-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-bottom: 4mm; }
+    .ekskul-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-bottom: 5mm; border: 1px solid var(--border-color); }
     .ekskul-table th {
-        background: var(--bg-header); color: var(--primary);
-        border: 1px solid var(--border-color); padding: 4px 6px; text-align: left;
+        background: var(--bg-light); color: var(--text-main); font-weight: bold; text-transform: uppercase; font-size: 8pt; letter-spacing: 0.5px;
+        border: 1px solid var(--border-color); padding: 5px 6px; text-align: left;
     }
-    .ekskul-table td { border: 1px solid var(--border-light); padding: 4px 6px; }
-    .ekskul-empty { border: 1px solid var(--border-light); padding: 6px 12px; margin-bottom: 4mm; font-size: 8.5pt; color: var(--text-light); }
+    .ekskul-table td { border: 1px solid var(--border-light); padding: 5px 6px; }
+    .ekskul-empty { border: 1px solid var(--border-light); padding: 8px 12px; margin-bottom: 5mm; font-size: 8.5pt; color: var(--text-muted); font-style: italic; }
 
     /* ── CATATAN ── */
     .catatan-box {
         border: 1px solid var(--border-color); border-top: none;
-        background: var(--bg-light); padding: 6px 10px;
-        min-height: 35px; margin-bottom: 5mm;
-        border-radius: 0 0 3px 3px;
+        background: #fafbfc; padding: 8px 12px;
+        min-height: 40px; margin-bottom: 6mm;
     }
     .catatan-text { font-size: 9pt; color: var(--text-dark); line-height: 1.5; font-style: italic; }
 
@@ -207,18 +212,18 @@
         table-layout: fixed; border-collapse: collapse;
     }
     .sign-table td { width: 33.33%; text-align: center; vertical-align: top; padding: 0 6px; border: none; }
-    .sign-title { font-size: 8.5pt; color: var(--text-dark); line-height: 1.5; }
-    .sign-space { height: 16mm; }
+    .sign-title { font-size: 8.5pt; color: var(--text-main); line-height: 1.5; }
+    .sign-space { height: 18mm; }
     /* Garis tanda tangan orang tua — konsisten dengan kolom lain */
-    .sign-line { width: 130px; border-bottom: 1px solid var(--text-main); margin: 0 auto 3px; height: 12px; display: block; }
+    .sign-line { width: 140px; border-bottom: 1px solid var(--text-main); margin: 0 auto 3px; height: 12px; display: block; }
     .sign-name { font-size: 9pt; font-weight: bold; color: var(--text-main); text-decoration: underline; margin-bottom: 2px; display: block; }
-    .sign-nip { font-size: 7.5pt; color: var(--text-light); }
+    .sign-nip { font-size: 8pt; color: var(--text-muted); }
 
     /* ── FOOTER ── */
     .rapot-footer {
-        text-align: center; margin-top: 5mm;
+        text-align: center; margin-top: 6mm;
         font-size: 7.5pt; color: var(--text-light);
-        border-top: 1px solid var(--border-footer); padding-top: 4px;
+        border-top: 1px solid var(--border-footer); padding-top: 6px;
     }
 </style>
 </head>
