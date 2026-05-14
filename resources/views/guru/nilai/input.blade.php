@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 @section('title', 'Input Nilai — ' . $mapel->kode_mapel . ' ' . $kelas->nama_kelas)
-@section('page-title', '📝 Input Nilai: {{ $mapel->nama_mapel }}')
-@section('page-subtitle', 'Kelas {{ $kelas->nama_kelas }} · {{ $ta->label }} · KKTP: {{ $mapel->kktp }}')
+@section('page-title', "📝 Input Nilai: {$mapel->nama_mapel}")
+@section('page-subtitle', "Kelas {$kelas->nama_kelas} · {$ta->label} · KKTP: {$mapel->kktp}")
 
 @section('sidebar-nav')
 <div class="nav-section-title">Utama</div>

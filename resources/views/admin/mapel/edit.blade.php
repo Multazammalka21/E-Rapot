@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 @section('title', 'Edit Mata Pelajaran')
 @section('page-title', '✏️ Edit Mata Pelajaran')
-@section('page-subtitle', 'Perbarui data {{ $mapel->nama_mapel }}')
+@section('page-subtitle', "Perbarui data {$mapel->nama_mapel}")
 @section('sidebar-nav') @include('admin.partials.sidebar') @endsection
 
 @section('content')

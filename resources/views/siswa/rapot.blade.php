@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 @section('title', 'Rapot Saya')
 @section('page-title', '📄 Rapot Saya')
-@section('page-subtitle', '{{ $ta->label }} — Kurikulum Merdeka Fase D')
+@section('page-subtitle', "{$ta->label} — Kurikulum Merdeka Fase D")
 @section('sidebar-nav') @include('siswa.partials.sidebar') @endsection
 
 @section('content')

@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 @section('title', 'Nilai Saya')
 @section('page-title', '📝 Nilai Saya')
-@section('page-subtitle', 'Capaian pembelajaran semester {{ $ta->label }}')
+@section('page-subtitle', "Capaian pembelajaran semester {$ta->label}")
 @section('sidebar-nav') @include('siswa.partials.sidebar') @endsection
 
 @section('content')

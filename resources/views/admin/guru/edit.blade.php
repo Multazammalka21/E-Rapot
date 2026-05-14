@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 @section('title', 'Edit Guru')
 @section('page-title', '✏️ Edit Data Guru')
-@section('page-subtitle', 'Perbarui data {{ $guru->nama_lengkap }}')
+@section('page-subtitle', "Perbarui data {$guru->nama_lengkap}")
 
 @section('sidebar-nav')
 @include('admin.partials.sidebar')

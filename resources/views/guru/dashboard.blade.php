@@ -2,7 +2,7 @@
 
 @section('title', 'Dashboard Guru')
 @section('page-title', 'Dashboard Guru')
-@section('page-subtitle', 'Selamat datang, {{ $guru?->nama_gelar ?? auth()->user()->name }}')
+@section('page-subtitle', 'Selamat datang, ' . ($guru?->nama_gelar ?? auth()->user()->name))
 
 @section('sidebar-nav')
 @include('guru.partials.sidebar')

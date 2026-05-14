@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 @section('title', 'Edit Kelas')
-@section('page-title', '✏️ Edit Kelas {{ $kelas->nama_kelas }}')
+@section('page-title', "✏️ Edit Kelas {$kelas->nama_kelas}")
 @section('page-subtitle', 'Perbarui data kelas')
 @section('sidebar-nav') @include('admin.partials.sidebar') @endsection
 

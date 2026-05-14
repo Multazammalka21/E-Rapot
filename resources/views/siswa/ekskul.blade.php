@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 @section('title', 'Ekstrakurikuler') @section('page-title', '🏅 Ekstrakurikuler')
-@section('page-subtitle', '{{ $ta->label }}')
+@section('page-subtitle', "{$ta->label}")
 @section('sidebar-nav') @include('siswa.partials.sidebar') @endsection
 
 @section('content')
