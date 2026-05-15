@@ -27,12 +27,30 @@
             --text: #1e293b; 
             --text-muted: #64748b; 
             --text-soft: #475569;
+            --header-bg: rgba(255, 255, 255, 0.8);
             --sidebar-w: 270px; 
             --header-h: 72px;
             --radius: 16px; 
             --radius-sm: 10px;
             --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --accent: #f8fafc;
+            --bg: #0f172a;
+            --sidebar-bg: #1e293b;
+            --surface: #1e293b;
+            --surface-2: #334155;
+            --border: #334155;
+            --border-2: #475569;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-soft: #cbd5e1;
+            --header-bg: rgba(30, 41, 59, 0.8);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
         }
 
         body { 
@@ -123,7 +141,7 @@
 
         /* ── Header ── */
         .header {
-            height: var(--header-h); background: rgba(255, 255, 255, 0.8);
+            height: var(--header-h); background: var(--header-bg);
             border-bottom: 1px solid var(--border); backdrop-filter: blur(12px);
             position: sticky; top: 0; z-index: 50;
             display: flex; align-items: center; justify-content: space-between;
@@ -176,7 +194,7 @@
         .panel-header {
             padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border);
             display: flex; align-items: center; justify-content: space-between;
-            background: rgba(248, 250, 252, 0.5);
+            background: var(--surface-2);
         }
         .panel-title { font-size: 1rem; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 0.6rem; }
         .panel-body { padding: 1.5rem; }
@@ -223,6 +241,15 @@
         }
     </style>
     @stack('styles')
+    <script>
+        // Set theme immediately to avoid flash of light mode
+        const storedTheme = localStorage.getItem('theme');
+        if (storedTheme) {
+            document.documentElement.setAttribute('data-theme', storedTheme);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
 </head>
 <body>
     <!-- SIDEBAR -->
@@ -273,8 +300,12 @@
                         {{ $ta->nama }} • {{ ucfirst($ta->semester) }}
                     </div>
                 @endif
-                <div style="font-size:0.85rem; color:var(--text-muted); font-weight:600">
-                    {{ now()->isoFormat('dddd, D MMMM Y') }}
+                <div style="font-size:0.85rem; color:var(--text-muted); font-weight:600; display:flex; align-items:center; gap:1.25rem">
+                    <span class="hidden sm:block">{{ now()->isoFormat('dddd, D MMMM Y') }}</span>
+                    <button id="theme-toggle" style="background:var(--surface-2); border:1px solid var(--border); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); cursor:pointer; transition:all 0.2s" aria-label="Toggle Theme">
+                        <i data-lucide="moon" id="theme-icon-dark" style="width:16px; height:16px; display:none"></i>
+                        <i data-lucide="sun" id="theme-icon-light" style="width:16px; height:16px; display:none"></i>
+                    </button>
                 </div>
             </div>
         </header>
@@ -287,6 +318,32 @@
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const iconDark = document.getElementById('theme-icon-dark');
+        const iconLight = document.getElementById('theme-icon-light');
+        const htmlElement = document.documentElement;
+
+        function updateThemeIcons() {
+            if (htmlElement.getAttribute('data-theme') === 'dark') {
+                iconDark.style.display = 'none';
+                iconLight.style.display = 'block';
+            } else {
+                iconLight.style.display = 'none';
+                iconDark.style.display = 'block';
+            }
+        }
+
+        updateThemeIcons(); // Run once on load
+
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcons();
+        });
     </script>
     @stack('scripts')
 </body>
