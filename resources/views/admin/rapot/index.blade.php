@@ -56,12 +56,12 @@
                         <td><code style="font-size:0.75rem;color:var(--accent)">{{ $s->nis }}</code></td>
                         <td style="text-align:center;white-space:nowrap">
                             <a href="{{ route('admin.rapot.preview', $s) }}" target="_blank"
-                                style="color:var(--primary-light);text-decoration:none;font-size:0.8rem;margin-right:0.75rem">
-                                👁️ Preview
+                                class="badge badge-info" style="text-decoration:none;margin-right:0.5rem">
+                                <i data-lucide="eye" style="width:12px;height:12px"></i> Preview
                             </a>
                             <a href="{{ route('admin.rapot.cetak', $s) }}"
-                                style="color:#6ee7b7;text-decoration:none;font-size:0.8rem">
-                                📥 Unduh PDF
+                                class="badge badge-success" style="text-decoration:none">
+                                <i data-lucide="download" style="width:12px;height:12px"></i> Unduh
                             </a>
                         </td>
                     </tr>
