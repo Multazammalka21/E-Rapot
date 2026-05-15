@@ -147,6 +147,9 @@
         .stat-grid-4 { grid-template-columns: repeat(4, 1fr); }
         .stat-grid-3 { grid-template-columns: repeat(3, 1fr); }
         .stat-grid-2 { grid-template-columns: repeat(2, 1fr); }
+        
+        .grid-2 { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: 250px 1fr 1fr; gap: 1.5rem; }
 
         .stat-card {
             background: var(--surface); border: 1px solid var(--border);
@@ -270,12 +273,9 @@
                         {{ $ta->nama }} • {{ ucfirst($ta->semester) }}
                     </div>
                 @endif
-                <div style="font-size:0.85rem; color:var(--text-muted); font-weight:600" class="hidden sm:block">
+                <div style="font-size:0.85rem; color:var(--text-muted); font-weight:600">
                     {{ now()->isoFormat('dddd, D MMMM Y') }}
                 </div>
-                <button class="sm:hidden" onclick="document.getElementById('sidebar').classList.toggle('show')" style="background:none; border:none; color:var(--accent); cursor:pointer">
-                    <i data-lucide="menu"></i>
-                </button>
             </div>
         </header>
 
