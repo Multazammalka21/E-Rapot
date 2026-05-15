@@ -26,5 +26,5 @@
 <a href="{{ route('admin.ekstrakurikuler.index') }}" class="nav-item {{ request()->routeIs('admin.ekstrakurikuler.*') ? 'active' : '' }}"><i data-lucide="award" class="nav-icon"></i> Ekstrakurikuler</a>
 
 <div class="nav-section-title">Laporan</div>
-<a href="#" class="nav-item"><i data-lucide="printer" class="nav-icon"></i> Cetak Rapot PDF</a>
-<a href="#" class="nav-item"><i data-lucide="clipboard-list" class="nav-icon"></i> Audit Log</a>
+<a href="{{ route('admin.rapot.index') }}" class="nav-item {{ request()->routeIs('admin.rapot.*') ? 'active' : '' }}"><i data-lucide="printer" class="nav-icon"></i> Cetak Rapot PDF</a>
+<a href="{{ route('admin.audit-log.index') }}" class="nav-item {{ request()->routeIs('admin.audit-log.*') ? 'active' : '' }}"><i data-lucide="clipboard-list" class="nav-icon"></i> Audit Log</a>

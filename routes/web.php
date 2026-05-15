@@ -29,6 +29,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('ekstrakurikuler', \App\Http\Controllers\Admin\EkstrakurikulerController::class);
     Route::resource('tahun-ajaran', \App\Http\Controllers\Admin\TahunAjaranController::class)->except('show');
     Route::get('/nilai', [\App\Http\Controllers\Admin\NilaiController::class, 'index'])->name('nilai.index');
+    
+    // Rapot & Audit
+    Route::get('/rapot', [\App\Http\Controllers\Admin\RapotController::class, 'index'])->name('rapot.index');
+    Route::get('/rapot/{siswa}/preview', [\App\Http\Controllers\Admin\RapotController::class, 'preview'])->name('rapot.preview');
+    Route::get('/rapot/{siswa}/cetak', [\App\Http\Controllers\Admin\RapotController::class, 'cetak'])->name('rapot.cetak');
+    Route::get('/audit-log', [\App\Http\Controllers\Admin\AuditLogController::class, 'index'])->name('audit-log.index');
 });
 
 // ── Guru Routes ────────────────────────────────────────────────────────────
