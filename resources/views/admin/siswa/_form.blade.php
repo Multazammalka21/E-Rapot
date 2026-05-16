@@ -32,10 +32,17 @@
             <option value="P" {{ old('jenis_kelamin', $isEdit ? $siswa->jenis_kelamin : '') == 'P' ? 'selected' : '' }}>Perempuan</option>
         </select>
     </div>
+    @if($isEdit)
     <div class="fg">
         <label for="nis">NIS (Sekolah) *</label>
-        <input type="text" id="nis" name="nis" value="{{ old('nis', $isEdit ? $siswa->nis : '') }}" maxlength="8" required>
+        <input type="text" id="nis" name="nis" value="{{ old('nis', $siswa->nis) }}" maxlength="8" readonly style="background: rgba(255,255,255,0.02); opacity: 0.7; cursor: not-allowed;">
     </div>
+    @else
+    <div class="fg">
+        <label>NIS (Sekolah)</label>
+        <input type="text" value="Dibuat Otomatis" readonly style="background: rgba(255,255,255,0.02); opacity: 0.7; cursor: not-allowed;">
+    </div>
+    @endif
     <div class="fg">
         <label for="nisn">NISN (10 digit) *</label>
         <input type="text" id="nisn" name="nisn" value="{{ old('nisn', $isEdit ? $siswa->nisn : '') }}" maxlength="10" required>

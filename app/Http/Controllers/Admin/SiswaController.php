@@ -37,7 +37,6 @@ class SiswaController extends Controller
     {
         $data = $request->validate([
             'nisn'           => 'required|string|size:10|unique:siswa,nisn',
-            'nis'            => 'required|string|max:8|unique:siswa,nis',
             'nama_lengkap'   => 'required|string|max:100',
             'jenis_kelamin'  => 'required|in:L,P',
             'tempat_lahir'   => 'nullable|string|max:60',
@@ -69,9 +68,14 @@ class SiswaController extends Controller
             $userId = $user->id;
         }
 
+        // Auto Generate NIS
+        $lastSiswa = Siswa::orderByRaw('CAST(nis AS UNSIGNED) DESC')->first();
+        $nextNis = $lastSiswa && is_numeric($lastSiswa->nis) ? ((int)$lastSiswa->nis + 1) : 10001;
+        $data['nis'] = (string) $nextNis;
+
         $siswa = Siswa::create(array_merge(
             collect($data)->except(['buat_akun','email','password'])->toArray(),
-            ['user_id' => $userId]
+            ['user_id' => $userId, 'nis' => $data['nis']]
         ));
 
         // Otomatis daftar ke Pramuka (atau ekskul pertama) agar setiap siswa punya minimal 1 ekskul
