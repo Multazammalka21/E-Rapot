@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Guru;
 use App\Models\Kelas;
+use App\Models\Siswa;
 use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -82,5 +83,38 @@ class KelasController extends Controller
         $kelas->delete();
         return redirect()->route('admin.kelas.index')
             ->with('success', "Kelas {$nama} berhasil dihapus.");
+    }
+    public function show(Kelas $kelas)
+    {
+        $kelas->load(['tahunAjaran', 'waliKelas', 'siswa']);
+        
+        $siswaTerdaftar = $kelas->siswa->pluck('id')->toArray();
+        $siswaTersedia = Siswa::whereNotIn('id', $siswaTerdaftar)->orderBy('nama_lengkap')->get();
+
+        return view('admin.kelas.show', compact('kelas', 'siswaTersedia'));
+    }
+
+    public function tambahAnggota(Request $request, Kelas $kelas)
+    {
+        $request->validate([
+            'siswa_id' => 'required|exists:siswa,id'
+        ]);
+
+        if ($kelas->siswa()->where('siswa.id', $request->siswa_id)->exists()) {
+            return back()->with('error', 'Siswa sudah ada di kelas ini.');
+        }
+
+        $kelas->siswa()->attach($request->siswa_id, [
+            'tahun_ajaran_id' => $kelas->tahun_ajaran_id,
+            'nomor_urut'      => $kelas->siswa()->count() + 1
+        ]);
+
+        return back()->with('success', 'Siswa berhasil ditambahkan ke kelas.');
+    }
+
+    public function hapusAnggota(Kelas $kelas, $id)
+    {
+        $kelas->siswa()->detach($id);
+        return back()->with('success', 'Siswa berhasil dihapus dari kelas.');
     }
 }

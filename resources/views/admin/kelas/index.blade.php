@@ -43,7 +43,8 @@
                     </td>
                     <td style="color:var(--text-muted)">{{ $k->kapasitas }}</td>
                     <td style="text-align:center;white-space:nowrap">
-                        <a href="{{ route('admin.kelas.edit', $k) }}" style="color:var(--primary-light);text-decoration:none;font-size:0.8rem;margin-right:0.5rem">✏️</a>
+                        <a href="{{ route('admin.kelas.show', $k) }}" style="color:var(--text-soft);text-decoration:none;font-size:0.8rem;margin-right:0.5rem" title="Lihat Anggota">👥</a>
+                        <a href="{{ route('admin.kelas.edit', $k) }}" style="color:var(--primary-light);text-decoration:none;font-size:0.8rem;margin-right:0.5rem" title="Edit">✏️</a>
                         <form method="POST" action="{{ route('admin.kelas.destroy', $k) }}" style="display:inline" onsubmit="return confirm('Hapus kelas {{ $k->nama_kelas }}?')">
                             @csrf @method('DELETE')
                             <button type="submit" style="background:none;border:none;color:#fca5a5;cursor:pointer;font-size:0.8rem">🗑️</button>

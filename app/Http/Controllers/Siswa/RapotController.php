@@ -36,7 +36,7 @@ class RapotController extends Controller
         $ekskul  = EkstrakurikulerSiswa::with('ekstrakurikuler')->where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->get();
         $catatan = CatatanWaliKelas::where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->first();
 
-        $rataRata = round($nilai->avg('nilai_akhir'), 2);
+        $rataRata = $nilai->isNotEmpty() ? round($nilai->avg('nilai_akhir'), 2) : 0;
         $ranking  = $this->hitungRanking($siswa->id, $siswaKelas?->kelas_id, $ta->id);
         $isReady  = $nilai->where('status', 'final')->count() > 0;
 
@@ -66,7 +66,7 @@ class RapotController extends Controller
         $absensi = Absensi::where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->first();
         $ekskul  = EkstrakurikulerSiswa::with('ekstrakurikuler')->where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->get();
         $catatan = CatatanWaliKelas::where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->first();
-        $rataRata = round($nilai->avg('nilai_akhir'), 2);
+        $rataRata = $nilai->isNotEmpty() ? round($nilai->avg('nilai_akhir'), 2) : 0;
         $ranking  = $this->hitungRanking($siswa->id, $siswaKelas->kelas_id, $ta->id);
 
         // Log cetak
@@ -77,6 +77,29 @@ class RapotController extends Controller
             ->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
         return $pdf->download('Rapot_' . str_replace(' ', '_', $siswa->nama_lengkap) . '.pdf');
+    }
+
+    public function preview()
+    {
+        $user  = Auth::user();
+        $siswa = $user->siswa;
+        $ta    = TahunAjaran::where('is_active', true)->firstOrFail();
+
+        $siswaKelas = SiswaKelas::with(['kelas.waliKelas'])
+            ->where('siswa_id', $siswa->id)
+            ->where('tahun_ajaran_id', $ta->id)
+            ->firstOrFail();
+
+        $nilai   = NilaiSiswa::with('mataPelajaran')->where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->get()->sortBy('mataPelajaran.nama_mapel');
+        $absensi = Absensi::where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->first();
+        $ekskul  = EkstrakurikulerSiswa::with('ekstrakurikuler')->where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->get();
+        $catatan = CatatanWaliKelas::where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->first();
+        $rataRata = $nilai->isNotEmpty() ? round($nilai->avg('nilai_akhir'), 2) : 0;
+        $ranking  = $this->hitungRanking($siswa->id, $siswaKelas->kelas_id, $ta->id);
+
+        RapotLog::catat($siswa->id, $ta->id, $siswaKelas->kelas_id, 'preview', $user);
+
+        return view('rapot.template', compact('siswa', 'siswaKelas', 'ta', 'nilai', 'absensi', 'ekskul', 'catatan', 'rataRata', 'ranking'));
     }
 
     private function hitungRanking(int $siswaId, ?int $kelasId, int $taId): array

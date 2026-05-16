@@ -230,9 +230,15 @@
 <body>
 
 {{-- Tombol unduh hanya tampil saat preview, tidak saat generate PDF --}}
-@if(request()->routeIs('guru.rapot.preview'))
+@if(request()->routeIs('*.preview'))
 <div class="print-btn">
-    <a href="{{ route('guru.rapot.cetak', $siswa) }}">&#x2B73; Unduh PDF</a>
+    @if(request()->routeIs('admin.*'))
+        <a href="{{ route('admin.rapot.cetak', $siswa) }}">&#x2B73; Unduh PDF</a>
+    @elseif(request()->routeIs('guru.*'))
+        <a href="{{ route('guru.rapot.cetak', $siswa) }}">&#x2B73; Unduh PDF</a>
+    @elseif(request()->routeIs('siswa.*'))
+        <a href="{{ route('siswa.rapot.download') }}">&#x2B73; Unduh PDF</a>
+    @endif
 </div>
 @endif
 

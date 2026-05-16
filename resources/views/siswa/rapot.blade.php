@@ -48,9 +48,13 @@
             <div style="font-size:0.8rem;color:var(--text-muted)">{{ $ta->nama }} · Kurikulum Merdeka Fase D · Kelas {{ $siswaKelas?->kelas?->nama_kelas }}</div>
         </div>
         <div style="display:flex;gap:0.75rem">
+            <a href="{{ route('siswa.rapot.preview') }}" target="_blank"
+                style="padding:0.7rem 1.5rem;background:linear-gradient(135deg,var(--primary-light),var(--primary));border-radius:10px;color:white;text-decoration:none;font-weight:700;font-size:0.875rem;display:flex;align-items:center;gap:0.5rem">
+                👁️ Preview PDF
+            </a>
             <a href="{{ route('siswa.rapot.download') }}"
                 style="padding:0.7rem 1.5rem;background:linear-gradient(135deg,#10b981,#059669);border-radius:10px;color:white;text-decoration:none;font-weight:700;font-size:0.875rem;display:flex;align-items:center;gap:0.5rem">
-                📥 Unduh PDF Rapot
+                📥 Unduh PDF
             </a>
         </div>
     </div>

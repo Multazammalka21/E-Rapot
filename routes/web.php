@@ -22,7 +22,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
     Route::resource('guru',  \App\Http\Controllers\Admin\GuruController::class)->except('show');
     Route::resource('siswa', \App\Http\Controllers\Admin\SiswaController::class)->except('show');
-    Route::resource('kelas', \App\Http\Controllers\Admin\KelasController::class)->parameters(['kelas' => 'kelas'])->except('show');
+    Route::resource('kelas', \App\Http\Controllers\Admin\KelasController::class)->parameters(['kelas' => 'kelas']);
+    Route::post('kelas/{kelas}/anggota', [\App\Http\Controllers\Admin\KelasController::class, 'tambahAnggota'])->name('kelas.tambah-anggota');
+    Route::delete('kelas/{kelas}/anggota/{id}', [\App\Http\Controllers\Admin\KelasController::class, 'hapusAnggota'])->name('kelas.hapus-anggota');
     Route::resource('mapel', \App\Http\Controllers\Admin\MataPelajaranController::class)->except('show');
     Route::post('ekstrakurikuler/{ekstrakurikuler}/anggota', [\App\Http\Controllers\Admin\EkstrakurikulerController::class, 'tambahAnggota'])->name('ekstrakurikuler.tambah-anggota');
     Route::delete('ekstrakurikuler/{ekstrakurikuler}/anggota/{id}', [\App\Http\Controllers\Admin\EkstrakurikulerController::class, 'hapusAnggota'])->name('ekstrakurikuler.hapus-anggota');
@@ -67,6 +69,7 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     Route::get('/dashboard', [SiswaDashboard::class, 'index'])->name('dashboard');
     Route::get('/nilai',     [\App\Http\Controllers\Siswa\NilaiController::class,   'index'])->name('nilai');
     Route::get('/rapot',     [\App\Http\Controllers\Siswa\RapotController::class,   'index'])->name('rapot');
+    Route::get('/rapot/preview', [\App\Http\Controllers\Siswa\RapotController::class, 'preview'])->name('rapot.preview');
     Route::get('/rapot/download', [\App\Http\Controllers\Siswa\RapotController::class, 'download'])->name('rapot.download');
     Route::get('/absensi',   [\App\Http\Controllers\Siswa\AbsensiController::class, 'index'])->name('absensi');
     Route::get('/ekskul',    [\App\Http\Controllers\Siswa\EkskulController::class,  'index'])->name('ekskul');

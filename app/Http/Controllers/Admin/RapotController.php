@@ -56,7 +56,7 @@ class RapotController extends Controller
         $ekskul   = EkstrakurikulerSiswa::with('ekstrakurikuler')->where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->get();
         $catatan  = CatatanWaliKelas::where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->first();
 
-        $rataRata = round($nilai->avg('nilai_akhir'), 2);
+        $rataRata = $nilai->isNotEmpty() ? round($nilai->avg('nilai_akhir'), 2) : 0;
         $ranking  = $this->hitungRanking($siswa->id, $siswaKelas->kelas_id, $ta->id);
 
         $data = compact('siswa', 'siswaKelas', 'ta', 'nilai', 'absensi', 'ekskul', 'catatan', 'rataRata', 'ranking');
@@ -88,7 +88,7 @@ class RapotController extends Controller
         $absensi  = Absensi::where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->first();
         $ekskul   = EkstrakurikulerSiswa::with('ekstrakurikuler')->where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->get();
         $catatan  = CatatanWaliKelas::where('siswa_id', $siswa->id)->where('tahun_ajaran_id', $ta->id)->first();
-        $rataRata = round($nilai->avg('nilai_akhir'), 2);
+        $rataRata = $nilai->isNotEmpty() ? round($nilai->avg('nilai_akhir'), 2) : 0;
         $ranking  = $this->hitungRanking($siswa->id, $siswaKelas->kelas_id, $ta->id);
 
         // Logging Action
