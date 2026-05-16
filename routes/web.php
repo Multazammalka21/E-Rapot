@@ -22,7 +22,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
     Route::resource('guru',  \App\Http\Controllers\Admin\GuruController::class)->except('show');
     Route::resource('siswa', \App\Http\Controllers\Admin\SiswaController::class)->except('show');
-    Route::resource('kelas', \App\Http\Controllers\Admin\KelasController::class)->except('show');
+    Route::resource('kelas', \App\Http\Controllers\Admin\KelasController::class)->parameters(['kelas' => 'kelas'])->except('show');
     Route::resource('mapel', \App\Http\Controllers\Admin\MataPelajaranController::class)->except('show');
     Route::post('ekstrakurikuler/{ekstrakurikuler}/anggota', [\App\Http\Controllers\Admin\EkstrakurikulerController::class, 'tambahAnggota'])->name('ekstrakurikuler.tambah-anggota');
     Route::delete('ekstrakurikuler/{ekstrakurikuler}/anggota/{id}', [\App\Http\Controllers\Admin\EkstrakurikulerController::class, 'hapusAnggota'])->name('ekstrakurikuler.hapus-anggota');
