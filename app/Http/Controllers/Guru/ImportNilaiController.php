@@ -130,12 +130,12 @@ class ImportNilaiController extends Controller
                     $rowIndex++;
                     if ($rowIndex === 1) continue; // skip header
 
-                    $cells = $row->getCells();
-                    $nis   = trim((string)($cells[1]?->getValue() ?? ''));
-                    $sh    = (int)($cells[3]?->getValue() ?? 0);
-                    $sts   = (int)($cells[4]?->getValue() ?? 0);
-                    $sas   = (int)($cells[5]?->getValue() ?? 0);
-                    $catatan = trim((string)($cells[6]?->getValue() ?? ''));
+                    $values = $row->toArray();
+                    $nis   = trim((string)($values[1] ?? ''));
+                    $sh    = (int)($values[3] ?? 0);
+                    $sts   = (int)($values[4] ?? 0);
+                    $sas   = (int)($values[5] ?? 0);
+                    $catatan = trim((string)($values[6] ?? ''));
 
                     if (empty($nis)) continue;
 
