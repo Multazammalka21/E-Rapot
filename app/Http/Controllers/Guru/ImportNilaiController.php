@@ -15,7 +15,9 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use OpenSpout\Reader\XLSX\Reader;
 use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Writer\XLSX\Options;
 use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
 
 class ImportNilaiController extends Controller
 {
@@ -46,15 +48,28 @@ class ImportNilaiController extends Controller
             ->get();
 
         $tmpFile = tempnam(sys_get_temp_dir(), 'rapot_') . '.xlsx';
-        $writer  = new Writer();
+        
+        $options = new Options();
+        $options->setColumnWidth(6.0, 1);
+        $options->setColumnWidth(15.0, 2);
+        $options->setColumnWidth(35.0, 3);
+        $options->setColumnWidth(18.0, 4, 5, 6);
+        $options->setColumnWidth(50.0, 7);
+
+        $writer  = new Writer($options);
         $writer->openToFile($tmpFile);
 
+        $headerStyle = (new Style())
+            ->withFontBold(true)
+            ->withBackgroundColor('FFD1D5DB') // Light Gray
+            ->withShouldWrapText(false);
+
         // Header row
-        $writer->addRow(Row::fromValues([
+        $writer->addRow(Row::fromValuesWithStyle([
             'No', 'NIS', 'Nama Lengkap',
             'Nilai SH (0-100)', 'Nilai STS (0-100)', 'Nilai SAS (0-100)',
             'Catatan Guru (Opsional)',
-        ]));
+        ], $headerStyle));
 
         // Data rows (siswa)
         foreach ($siswaList as $sk) {

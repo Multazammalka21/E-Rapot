@@ -71,7 +71,6 @@
             </span>
             @if(!$isFinal)
             <div style="display:flex;gap:0.5rem">
-                <button type="button" onclick="isiRandom()" style="padding:0.4rem 0.85rem;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);border-radius:7px;color:#fcd34d;cursor:pointer;font-size:0.78rem;font-family:'Inter',sans-serif">🎲 Isi Demo</button>
                 <button type="submit" style="padding:0.4rem 0.85rem;background:linear-gradient(135deg,var(--primary),var(--accent));border:none;border-radius:7px;color:white;cursor:pointer;font-size:0.78rem;font-weight:600;font-family:'Inter',sans-serif">💾 Simpan Semua</button>
             </div>
             @endif
@@ -189,16 +188,6 @@ document.querySelectorAll('tr[data-kktp]').forEach(row => {
     if (row.querySelector('.sh-input')?.value) hitungAkhir(row);
 });
 
-// Isi demo random untuk testing
-function isiRandom() {
-    if (!confirm('Isi semua nilai dengan data random? (untuk testing)')) return;
-    document.querySelectorAll('tr[data-kktp]').forEach(row => {
-        const base = Math.floor(Math.random() * 35) + 60; // 60–95
-        row.querySelector('.sh-input').value  = Math.min(100, base + Math.floor(Math.random()*10-5));
-        row.querySelector('.sts-input').value = Math.min(100, base + Math.floor(Math.random()*10-5));
-        row.querySelector('.sas-input').value = Math.min(100, base + Math.floor(Math.random()*10-5));
-        hitungAkhir(row);
-    });
-}
+
 </script>
 @endpush
