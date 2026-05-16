@@ -22,7 +22,7 @@
                         <select id="siswa_id" name="siswa_id" required style="width:100%;padding:0.6rem;border:1px solid var(--border);border-radius:8px;font-family:'Inter',sans-serif;font-size:0.85rem">
                             <option value="">-- Pilih Siswa --</option>
                             @foreach($siswaLain as $s)
-                                <option value="{{ $s->id }}">{{ $s->nis }} - {{ $s->nama_lengkap }}</option>
+                                <option value="{{ $s->id }}">{{ $s->nis }} - {{ $s->nama_lengkap }} (Kelas: {{ $s->kelas->first()->nama_kelas ?? '-' }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -41,6 +41,7 @@
                     <tr>
                         <th>NIS</th>
                         <th>Nama Siswa</th>
+                        <th>Kelas</th>
                         <th style="text-align:center">Aksi</th>
                     </tr>
                 </thead>
@@ -49,6 +50,7 @@
                     <tr>
                         <td style="color:var(--text);font-weight:600">{{ $a->siswa->nis }}</td>
                         <td>{{ $a->siswa->nama_lengkap }}</td>
+                        <td><span class="badge badge-info">{{ $a->siswa->kelas->first()->nama_kelas ?? '-' }}</span></td>
                         <td style="text-align:center">
                             <form method="POST" action="{{ route('admin.ekstrakurikuler.hapus-anggota', [$ekstrakurikuler->id, $a->id]) }}" style="display:inline"
                                   onsubmit="return confirm('Hapus siswa {{ $a->siswa->nama_lengkap }} dari ekstrakurikuler ini?')">
@@ -58,7 +60,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:2rem">Belum ada anggota.</td></tr>
+                    <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:2rem">Belum ada anggota.</td></tr>
                     @endforelse
                 </tbody>
             </table>

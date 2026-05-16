@@ -77,11 +77,15 @@ class EkstrakurikulerController extends Controller
     public function show(Ekstrakurikuler $ekstrakurikuler)
     {
         $ta = \App\Models\TahunAjaran::where('is_active', true)->first();
-        $anggota = \App\Models\EkstrakurikulerSiswa::with('siswa')
+        $anggota = \App\Models\EkstrakurikulerSiswa::with(['siswa.kelas' => fn($q) => $ta ? $q->wherePivot('tahun_ajaran_id', $ta->id) : $q])
             ->where('ekstrakurikuler_id', $ekstrakurikuler->id)
             ->when($ta, fn($q) => $q->where('tahun_ajaran_id', $ta->id))
             ->get();
-        $siswaLain = \App\Models\Siswa::whereNotIn('id', $anggota->pluck('siswa_id'))->get();
+            
+        $siswaLain = \App\Models\Siswa::with(['kelas' => fn($q) => $ta ? $q->wherePivot('tahun_ajaran_id', $ta->id) : $q])
+            ->whereNotIn('id', $anggota->pluck('siswa_id'))
+            ->orderBy('nama_lengkap')
+            ->get();
         
         return view('admin.ekstrakurikuler.show', compact('ekstrakurikuler', 'anggota', 'siswaLain', 'ta'));
     }

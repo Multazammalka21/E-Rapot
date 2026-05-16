@@ -62,7 +62,47 @@ class NilaiController extends Controller
             ->where('tahun_ajaran_id', $ta->id)
             ->first();
 
-        return view('guru.nilai.index', compact('assignments', 'progress', 'ta', 'kelasWali', 'guru'));
+        $isWaliKelasFinal = false;
+        $waliAssignments = collect();
+        $waliProgress = [];
+
+        if ($kelasWali) {
+            $isWaliKelasFinal = NilaiSiswa::where('kelas_id', $kelasWali->id)
+                ->where('tahun_ajaran_id', $ta->id)
+                ->where('status', 'final')
+                ->exists();
+
+            $waliAssignments = GuruMapel::with(['kelas', 'mataPelajaran', 'guru'])
+                ->where('kelas_id', $kelasWali->id)
+                ->where('tahun_ajaran_id', $ta->id)
+                ->get();
+                
+            foreach ($waliAssignments as $gm) {
+                $totalSiswa  = SiswaKelas::where('kelas_id', $gm->kelas_id)
+                    ->where('tahun_ajaran_id', $ta->id)->count();
+
+                $sudahInput  = NilaiSiswa::where('kelas_id', $gm->kelas_id)
+                    ->where('mata_pelajaran_id', $gm->mata_pelajaran_id)
+                    ->where('tahun_ajaran_id', $ta->id)
+                    ->whereNotNull('nilai_akhir')
+                    ->count();
+
+                $isFinal = NilaiSiswa::where('kelas_id', $gm->kelas_id)
+                    ->where('mata_pelajaran_id', $gm->mata_pelajaran_id)
+                    ->where('tahun_ajaran_id', $ta->id)
+                    ->where('status', 'final')
+                    ->exists();
+
+                $waliProgress[$gm->id] = [
+                    'total'      => $totalSiswa,
+                    'sudah'      => $sudahInput,
+                    'pct'        => $totalSiswa ? round($sudahInput / $totalSiswa * 100) : 0,
+                    'is_final'   => $isFinal,
+                ];
+            }
+        }
+
+        return view('guru.nilai.index', compact('assignments', 'progress', 'ta', 'kelasWali', 'guru', 'isWaliKelasFinal', 'waliAssignments', 'waliProgress'));
     }
 
     /** Form input nilai semua siswa di kelas tertentu untuk satu mapel */
@@ -204,5 +244,31 @@ class NilaiController extends Controller
         return redirect()
             ->route('guru.nilai.index')
             ->with('success', "🔒 {$updated} nilai Kelas {$kelas->nama_kelas} berhasil difinalisasi!");
+    }
+
+    /** Batal Finalisasi semua nilai di satu kelas oleh wali kelas */
+    public function unfinalize(Request $request, int $kelasId)
+    {
+        $guru  = Auth::user()->guru;
+        $ta    = TahunAjaran::where('is_active', true)->firstOrFail();
+        $kelas = Kelas::findOrFail($kelasId);
+
+        // Pastikan yang batal finalisasi adalah wali kelas
+        if ($kelas->wali_kelas_id !== $guru->id) {
+            abort(403, 'Hanya wali kelas yang dapat membatalkan finalisasi nilai.');
+        }
+
+        $updated = NilaiSiswa::where('kelas_id', $kelasId)
+            ->where('tahun_ajaran_id', $ta->id)
+            ->where('status', 'final')
+            ->update([
+                'status'       => 'draft',
+                'finalized_by' => null,
+                'finalized_at' => null,
+            ]);
+
+        return redirect()
+            ->route('guru.nilai.index')
+            ->with('success', "🔓 {$updated} nilai Kelas {$kelas->nama_kelas} berhasil dibatalkan finalisasinya (Draft).");
     }
 }

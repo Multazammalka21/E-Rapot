@@ -62,7 +62,7 @@ class RapotController extends Controller
         $data = compact('siswa', 'siswaKelas', 'ta', 'nilai', 'absensi', 'ekskul', 'catatan', 'rataRata', 'ranking');
 
         // Logging Action
-        RapotLog::catat($siswa->id, $ta->id, $siswaKelas->kelas_id, 'Cetak PDF (Admin)', Auth::user());
+        RapotLog::catat($siswa->id, $ta->id, $siswaKelas->kelas_id, 'print', Auth::user());
 
         $pdf = Pdf::loadView('rapot.template', $data)
             ->setPaper('A4', 'portrait')
@@ -92,7 +92,7 @@ class RapotController extends Controller
         $ranking  = $this->hitungRanking($siswa->id, $siswaKelas->kelas_id, $ta->id);
 
         // Logging Action
-        RapotLog::catat($siswa->id, $ta->id, $siswaKelas->kelas_id, 'Preview (Admin)', Auth::user());
+        RapotLog::catat($siswa->id, $ta->id, $siswaKelas->kelas_id, 'view', Auth::user());
 
         return view('rapot.template', compact('siswa', 'siswaKelas', 'ta', 'nilai', 'absensi', 'ekskul', 'catatan', 'rataRata', 'ranking'));
     }

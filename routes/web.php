@@ -48,6 +48,7 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
     Route::get('/nilai/{kelas}/{mapel}/input', [\App\Http\Controllers\Guru\NilaiController::class, 'input'])->name('nilai.input');
     Route::post('/nilai/{kelas}/{mapel}/store', [\App\Http\Controllers\Guru\NilaiController::class, 'store'])->name('nilai.store');
     Route::post('/nilai/{kelas}/finalize', [\App\Http\Controllers\Guru\NilaiController::class, 'finalize'])->name('nilai.finalize');
+    Route::post('/nilai/{kelas}/unfinalize', [\App\Http\Controllers\Guru\NilaiController::class, 'unfinalize'])->name('nilai.unfinalize');
     // Rapot PDF
     Route::get('/rapot', [\App\Http\Controllers\Guru\RapotController::class, 'index'])->name('rapot.index');
     Route::get('/rapot/{siswa}/preview', [\App\Http\Controllers\Guru\RapotController::class, 'preview'])->name('rapot.preview');

@@ -97,7 +97,7 @@ class RapotController extends Controller
         $rataRata = $nilai->isNotEmpty() ? round($nilai->avg('nilai_akhir'), 2) : 0;
         $ranking  = $this->hitungRanking($siswa->id, $siswaKelas->kelas_id, $ta->id);
 
-        RapotLog::catat($siswa->id, $ta->id, $siswaKelas->kelas_id, 'preview', $user);
+        RapotLog::catat($siswa->id, $ta->id, $siswaKelas->kelas_id, 'view', $user);
 
         return view('rapot.template', compact('siswa', 'siswaKelas', 'ta', 'nilai', 'absensi', 'ekskul', 'catatan', 'rataRata', 'ranking'));
     }
