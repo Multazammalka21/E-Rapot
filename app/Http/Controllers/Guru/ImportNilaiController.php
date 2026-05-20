@@ -31,6 +31,14 @@ class ImportNilaiController extends Controller
             ->where('tahun_ajaran_id', $ta->id)
             ->get();
 
+        foreach ($assignments as $gm) {
+            $gm->is_final = NilaiSiswa::where('kelas_id', $gm->kelas_id)
+                ->where('mata_pelajaran_id', $gm->mata_pelajaran_id)
+                ->where('tahun_ajaran_id', $ta->id)
+                ->where('status', 'final')
+                ->exists();
+        }
+
         return view('guru.import.index', compact('assignments', 'ta'));
     }
 
@@ -40,6 +48,17 @@ class ImportNilaiController extends Controller
         $ta     = TahunAjaran::where('is_active', true)->firstOrFail();
         $kelas  = Kelas::findOrFail($kelasId);
         $mapel  = MataPelajaran::findOrFail($mapelId);
+
+        // Proteksi Keamanan: Cek apakah nilai sudah difinalisasi
+        $isFinal = NilaiSiswa::where('kelas_id', $kelasId)
+            ->where('mata_pelajaran_id', $mapelId)
+            ->where('tahun_ajaran_id', $ta->id)
+            ->where('status', 'final')
+            ->exists();
+
+        if ($isFinal) {
+            return back()->with('error', "Gagal mengunduh template: Nilai Kelas {$kelas->nama_kelas} untuk Mapel {$mapel->nama_mapel} telah difinalisasi oleh Wali Kelas.");
+        }
 
         $siswaList = SiswaKelas::with('siswa')
             ->where('kelas_id', $kelasId)
@@ -106,6 +125,17 @@ class ImportNilaiController extends Controller
             GuruMapel::where('guru_id', $guru->id)->where('kelas_id', $kelasId)->where('mata_pelajaran_id', $mapelId)->where('tahun_ajaran_id', $ta->id)->exists(),
             403, 'Anda tidak berwenang mengisi nilai mapel ini.'
         );
+
+        // Proteksi Keamanan: Cek apakah nilai sudah difinalisasi
+        $isFinal = NilaiSiswa::where('kelas_id', $kelasId)
+            ->where('mata_pelajaran_id', $mapelId)
+            ->where('tahun_ajaran_id', $ta->id)
+            ->where('status', 'final')
+            ->exists();
+
+        if ($isFinal) {
+            return back()->with('error', 'Gagal memproses import: Nilai mata pelajaran ini telah difinalisasi oleh Wali Kelas.');
+        }
 
         // Ambil siswa (NIS → siswa_id map)
         $siswaMap = SiswaKelas::with('siswa')

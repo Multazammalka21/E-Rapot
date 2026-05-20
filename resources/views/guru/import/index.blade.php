@@ -54,16 +54,24 @@
                         {{ $gm->mataPelajaran?->bobot_sumatif_akhir }}%
                     </td>
                     <td style="text-align:center">
-                        <a href="{{ route('guru.import.template', [$gm->kelas_id, $gm->mata_pelajaran_id]) }}"
-                            style="color:#6ee7b7;text-decoration:none;font-size:0.8rem;font-weight:600">
-                            📥 Template
-                        </a>
+                        @if($gm->is_final)
+                            <span style="color:var(--text-muted); font-size:0.8rem">🔒 Terkunci</span>
+                        @else
+                            <a href="{{ route('guru.import.template', [$gm->kelas_id, $gm->mata_pelajaran_id]) }}"
+                                style="color:#6ee7b7;text-decoration:none;font-size:0.8rem;font-weight:600">
+                                📥 Template
+                            </a>
+                        @endif
                     </td>
                     <td style="text-align:center">
-                        <button onclick="openModal({{ $gm->kelas_id }}, {{ $gm->mata_pelajaran_id }}, '{{ $gm->kelas?->nama_kelas }}', '{{ $gm->mataPelajaran?->nama_mapel }}')"
-                            style="background:rgba(79,70,229,0.15);border:1px solid rgba(79,70,229,0.3);border-radius:6px;color:var(--primary-light);cursor:pointer;font-size:0.8rem;padding:0.3rem 0.75rem;font-family:'Inter',sans-serif">
-                            📤 Upload
-                        </button>
+                        @if($gm->is_final)
+                            <span class="badge badge-success">🔒 Final</span>
+                        @else
+                            <button onclick="openModal({{ $gm->kelas_id }}, {{ $gm->mata_pelajaran_id }}, '{{ $gm->kelas?->nama_kelas }}', '{{ $gm->mataPelajaran?->nama_mapel }}')"
+                                style="background:rgba(79,70,229,0.15);border:1px solid rgba(79,70,229,0.3);border-radius:6px;color:var(--primary-light);cursor:pointer;font-size:0.8rem;padding:0.3rem 0.75rem;font-family:'Inter',sans-serif">
+                                📤 Upload
+                            </button>
+                        @endif
                     </td>
                 </tr>
                 @empty
