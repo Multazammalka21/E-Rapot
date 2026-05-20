@@ -39,9 +39,15 @@ class TahunAjaranController extends Controller
         ]);
 
         $data['is_active'] = $request->boolean('is_active', false);
-        
+
         if ($data['is_active']) {
-            // Nonaktifkan yang lain
+            // ─── Proteksi: Cek draft di TA aktif sebelum diganti ─────────────
+            $error = $this->cekDraftTaAktif();
+            if ($error) {
+                return back()->withInput()->withErrors(['is_active' => $error]);
+            }
+            // ────────────────────────────────────────────────────────────────
+
             TahunAjaran::where('is_active', true)->update(['is_active' => false]);
         }
 
@@ -75,7 +81,7 @@ class TahunAjaranController extends Controller
 
         $data['is_active'] = $request->boolean('is_active', false);
 
-        // ─── Proteksi: Cegah nonaktifkan TA yang masih punya nilai draft ────
+        // ─── Proteksi 1: Cegah nonaktifkan TA INI jika masih ada draft ───────
         if ($tahun_ajaran->is_active && !$data['is_active']) {
             $draftCount = NilaiSiswa::where('tahun_ajaran_id', $tahun_ajaran->id)
                 ->where('status', 'draft')
@@ -89,6 +95,14 @@ class TahunAjaranController extends Controller
                             . "Masih terdapat {$draftCount} nilai yang belum difinalisasi oleh guru. "
                             . "Harap finalisasi semua nilai terlebih dahulu.",
                     ]);
+            }
+        }
+
+        // ─── Proteksi 2: Cegah aktivasi TA LAIN jika TA aktif punya draft ────
+        if ($data['is_active'] && !$tahun_ajaran->is_active) {
+            $error = $this->cekDraftTaAktif(exclude: $tahun_ajaran->id);
+            if ($error) {
+                return back()->withInput()->withErrors(['is_active' => $error]);
             }
         }
         // ────────────────────────────────────────────────────────────────────
@@ -118,5 +132,44 @@ class TahunAjaranController extends Controller
         $tahun_ajaran->delete();
         return redirect()->route('admin.tahun-ajaran.index')
             ->with('success', 'Tahun Ajaran berhasil dihapus.');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // PRIVATE HELPER
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Cek apakah tahun ajaran yang sedang aktif masih memiliki nilai draft.
+     * Jika ya, kembalikan string pesan error. Jika aman, kembalikan null.
+     *
+     * @param int|null $exclude  ID tahun ajaran yang dikecualikan dari pengecekan
+     *                           (dipakai saat update: TA yang diedit tidak perlu dicek)
+     */
+    private function cekDraftTaAktif(?int $exclude = null): ?string
+    {
+        $query = TahunAjaran::where('is_active', true);
+
+        if ($exclude !== null) {
+            $query->where('id', '!=', $exclude);
+        }
+
+        $taAktif = $query->first();
+
+        if (!$taAktif) {
+            return null; // Tidak ada TA aktif, aman
+        }
+
+        $draftCount = NilaiSiswa::where('tahun_ajaran_id', $taAktif->id)
+            ->where('status', 'draft')
+            ->count();
+
+        if ($draftCount === 0) {
+            return null; // Tidak ada draft, aman
+        }
+
+        return "Tidak dapat mengaktifkan tahun ajaran baru. "
+            . "Tahun ajaran '{$taAktif->nama}' yang sedang aktif masih memiliki "
+            . "{$draftCount} nilai yang belum difinalisasi. "
+            . "Harap finalisasi semua nilai di tahun ajaran tersebut terlebih dahulu.";
     }
 }
