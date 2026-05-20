@@ -23,6 +23,7 @@
                     <th>Semester</th>
                     <th>Periode</th>
                     <th>Status</th>
+                    <th style="text-align:center">Nilai Draft</th>
                     <th style="text-align:center">Aksi</th>
                 </tr>
             </thead>
@@ -39,10 +40,23 @@
                             {{ $t->is_active ? 'Aktif' : 'Nonaktif' }}
                         </span>
                     </td>
+                    <td style="text-align:center">
+                        @php $draft = $draftPerTa[$t->id] ?? 0; @endphp
+                        @if($draft > 0)
+                            <span style="
+                                display:inline-flex;align-items:center;gap:0.3rem;
+                                background:rgba(251,191,36,0.18);border:1px solid rgba(251,191,36,0.4);
+                                color:#fbbf24;border-radius:20px;padding:0.2rem 0.7rem;font-size:0.78rem;font-weight:700
+                            ">⚠️ {{ $draft }}</span>
+                        @else
+                            <span style="color:var(--text-muted);font-size:0.8rem">—</span>
+                        @endif
+                    </td>
                     <td style="text-align:center;white-space:nowrap">
                         <a href="{{ route('admin.tahun-ajaran.edit', $t) }}" style="color:var(--primary-light);text-decoration:none;font-size:0.8rem;margin-right:0.5rem">✏️ Edit</a>
+                        @php $draftMsg = ($draftPerTa[$t->id] ?? 0) > 0 ? ' (Masih ada ' . $draftPerTa[$t->id] . ' nilai draft!)' : ''; @endphp
                         <form method="POST" action="{{ route('admin.tahun-ajaran.destroy', $t) }}" style="display:inline"
-                              onsubmit="return confirm('Hapus Tahun Ajaran {{ $t->nama }}?')">
+                              onsubmit="return confirm('Hapus Tahun Ajaran {{ $t->nama }}?{{ $draftMsg }}')">
                             @csrf @method('DELETE')
                             <button type="submit" style="background:none;border:none;color:#fca5a5;cursor:pointer;font-size:0.8rem">🗑️ Hapus</button>
                         </form>
