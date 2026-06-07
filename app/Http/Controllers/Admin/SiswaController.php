@@ -52,12 +52,29 @@ class SiswaController extends Controller
             'alamat_ortu'    => 'nullable|string',
             // Akun opsional
             'buat_akun'      => 'nullable|boolean',
-            'email'          => 'nullable|email|unique:users,email|required_if:buat_akun,1',
-            'password'       => 'nullable|min:6|required_if:buat_akun,1',
+            'email'          => 'nullable|email|unique:users,email',
+            'password'       => 'nullable|min:6',
         ]);
 
         $userId = null;
         if ($request->boolean('buat_akun')) {
+            // Auto Generate Email
+            if (empty($data['email'])) {
+                $email = $data['nisn'] . '@smpn1sby.sch.id';
+                $counter = 1;
+                $baseEmail = $data['nisn'];
+                while (User::withTrashed()->where('email', $email)->exists()) {
+                    $email = $baseEmail . '_' . $counter . '@smpn1sby.sch.id';
+                    $counter++;
+                }
+                $data['email'] = $email;
+            }
+
+            // Auto Generate Password
+            if (empty($data['password'])) {
+                $data['password'] = 'Siswa@1234';
+            }
+
             $user = User::create([
                 'name'      => $data['nama_lengkap'],
                 'email'     => $data['email'],
@@ -69,7 +86,7 @@ class SiswaController extends Controller
         }
 
         // Auto Generate NIS
-        $lastSiswa = Siswa::orderByRaw('CAST(nis AS UNSIGNED) DESC')->first();
+        $lastSiswa = Siswa::withTrashed()->orderByRaw('CAST(nis AS UNSIGNED) DESC')->first();
         $nextNis = $lastSiswa && is_numeric($lastSiswa->nis) ? ((int)$lastSiswa->nis + 1) : 10001;
         $data['nis'] = (string) $nextNis;
 

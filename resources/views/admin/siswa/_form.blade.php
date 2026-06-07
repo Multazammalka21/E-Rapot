@@ -14,6 +14,7 @@
     .fg select { appearance: auto; }
     .fg textarea { min-height: 70px; resize: vertical; }
     .section-title { font-size: 0.8rem; font-weight: 700; color: var(--primary-light); margin: 1.5rem 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); grid-column: 1 / -1; }
+    .fg .hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem; }
     .btn-bar { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
     .btn-save { padding: 0.7rem 1.5rem; background: linear-gradient(135deg,var(--primary),var(--accent)); border: none; border-radius: 10px; color: white; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.9rem; }
     .btn-cancel { padding: 0.7rem 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text-soft); text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; }
@@ -86,8 +87,16 @@
         <label><input type="checkbox" name="buat_akun" value="1" {{ old('buat_akun') ? 'checked' : '' }} onchange="document.getElementById('akun-fields').style.display=this.checked?'grid':'none'" style="width:auto;margin-right:0.5rem">Buat akun login untuk siswa</label>
     </div>
     <div id="akun-fields" class="form-grid form-full" style="display:{{ old('buat_akun') ? 'grid' : 'none' }}">
-        <div class="fg"><label for="email">Email</label><input type="email" id="email" name="email" value="{{ old('email') }}"></div>
-        <div class="fg"><label for="password">Password</label><input type="password" id="password" name="password"></div>
+        <div class="fg">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="nisn@smpn1sby.sch.id">
+            <div class="hint">Kosongkan untuk generate otomatis dari NISN</div>
+        </div>
+        <div class="fg">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Bawaan: Siswa@1234">
+            <div class="hint">Kosongkan untuk default: Siswa@1234</div>
+        </div>
     </div>
     @endif
 </div>

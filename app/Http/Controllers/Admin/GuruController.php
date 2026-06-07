@@ -35,8 +35,8 @@ class GuruController extends Controller
         $data = $request->validate([
             'nip'            => 'nullable|string|max:20|unique:guru,nip',
             'nama_lengkap'   => 'required|string|max:100',
-            'email'          => 'required|email|unique:users,email',
-            'password'       => 'required|min:6',
+            'email'          => 'nullable|email|unique:users,email',
+            'password'       => 'nullable|min:6',
             'jenis_kelamin'  => 'required|in:L,P',
             'tempat_lahir'   => 'nullable|string|max:60',
             'tanggal_lahir'  => 'nullable|date',
@@ -46,6 +46,23 @@ class GuruController extends Controller
             'gelar_belakang' => 'nullable|string|max:30',
             'bidang_studi'   => 'nullable|string|max:80',
         ]);
+
+        // Auto Generate Email
+        if (empty($data['email'])) {
+            $emailName = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $data['nama_lengkap']));
+            $email = $emailName . '@smpn1sby.sch.id';
+            $counter = 1;
+            while (User::withTrashed()->where('email', $email)->exists()) {
+                $email = $emailName . $counter . '@smpn1sby.sch.id';
+                $counter++;
+            }
+            $data['email'] = $email;
+        }
+
+        // Auto Generate Password
+        if (empty($data['password'])) {
+            $data['password'] = 'Guru@1234';
+        }
 
         $user = User::create([
             'name'      => $data['nama_lengkap'],

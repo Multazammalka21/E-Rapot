@@ -31,12 +31,18 @@
         <input type="text" id="nip" name="nip" value="{{ old('nip', $isEdit ? $guru->nip : '') }}" maxlength="20">
     </div>
     <div class="fg">
-        <label for="email">Email Akun *</label>
-        <input type="email" id="email" name="email" value="{{ old('email', $isEdit ? $guru->user?->email : '') }}" required>
+        <label for="email">Email Akun @if($isEdit) * @endif</label>
+        <input type="email" id="email" name="email" value="{{ old('email', $isEdit ? $guru->user?->email : '') }}" @if($isEdit) required @endif placeholder="nama@smpn1sby.sch.id">
+        @if(!$isEdit)
+        <div class="hint">Kosongkan untuk generate otomatis dari nama</div>
+        @endif
     </div>
     <div class="fg">
-        <label for="password">Password {{ $isEdit ? '(kosongkan jika tidak diubah)' : '*' }}</label>
-        <input type="password" id="password" name="password" {{ $isEdit ? '' : 'required' }} minlength="6">
+        <label for="password">Password @if($isEdit) {{ '(kosongkan jika tidak diubah)' }} @endif</label>
+        <input type="password" id="password" name="password" minlength="6" placeholder="@if($isEdit) Kosongkan jika tidak diubah @else Bawaan: Guru@1234 @endif">
+        @if(!$isEdit)
+        <div class="hint">Kosongkan untuk default: Guru@1234</div>
+        @endif
     </div>
     <div class="fg">
         <label for="jenis_kelamin">Jenis Kelamin *</label>
