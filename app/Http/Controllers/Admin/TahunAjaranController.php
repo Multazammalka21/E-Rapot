@@ -47,14 +47,21 @@ class TahunAjaranController extends Controller
                 return back()->withInput()->withErrors(['is_active' => $error]);
             }
             // ────────────────────────────────────────────────────────────────
-
-            TahunAjaran::where('is_active', true)->update(['is_active' => false]);
         }
 
-        TahunAjaran::create($data);
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($data) {
+                if ($data['is_active']) {
+                    TahunAjaran::where('is_active', true)->update(['is_active' => false]);
+                }
+                TahunAjaran::create($data);
+            });
 
-        return redirect()->route('admin.tahun-ajaran.index')
-            ->with('success', 'Tahun Ajaran berhasil ditambahkan.');
+            return redirect()->route('admin.tahun-ajaran.index')
+                ->with('success', 'Tahun Ajaran berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', "Gagal menambahkan tahun ajaran: " . $e->getMessage());
+        }
     }
 
     public function edit(TahunAjaran $tahun_ajaran)
@@ -107,15 +114,20 @@ class TahunAjaranController extends Controller
         }
         // ────────────────────────────────────────────────────────────────────
 
-        if ($data['is_active']) {
-            // Nonaktifkan yang lain
-            TahunAjaran::where('id', '!=', $tahun_ajaran->id)->update(['is_active' => false]);
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($tahun_ajaran, $data) {
+                if ($data['is_active']) {
+                    // Nonaktifkan yang lain
+                    TahunAjaran::where('id', '!=', $tahun_ajaran->id)->update(['is_active' => false]);
+                }
+                $tahun_ajaran->update($data);
+            });
+
+            return redirect()->route('admin.tahun-ajaran.index')
+                ->with('success', 'Tahun Ajaran berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', "Gagal memperbarui tahun ajaran: " . $e->getMessage());
         }
-
-        $tahun_ajaran->update($data);
-
-        return redirect()->route('admin.tahun-ajaran.index')
-            ->with('success', 'Tahun Ajaran berhasil diperbarui.');
     }
 
     public function destroy(TahunAjaran $tahun_ajaran)
@@ -129,9 +141,14 @@ class TahunAjaranController extends Controller
         }
         // ────────────────────────────────────────────────────────────────────
 
-        $tahun_ajaran->delete();
-        return redirect()->route('admin.tahun-ajaran.index')
-            ->with('success', 'Tahun Ajaran berhasil dihapus.');
+        try {
+            $tahun_ajaran->delete();
+            return redirect()->route('admin.tahun-ajaran.index')
+                ->with('success', 'Tahun Ajaran berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.tahun-ajaran.index')
+                ->with('error', "Gagal menghapus tahun ajaran: " . $e->getMessage());
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────

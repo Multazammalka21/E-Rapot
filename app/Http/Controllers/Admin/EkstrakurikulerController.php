@@ -37,11 +37,15 @@ class EkstrakurikulerController extends Controller
             'is_active'  => 'nullable|boolean',
         ]);
 
-        $data['is_active'] = $request->boolean('is_active', true);
-        Ekstrakurikuler::create($data);
+        try {
+            $data['is_active'] = $request->boolean('is_active', true);
+            Ekstrakurikuler::create($data);
 
-        return redirect()->route('admin.ekstrakurikuler.index')
-            ->with('success', "Ekstrakurikuler {$data['nama']} berhasil ditambahkan.");
+            return redirect()->route('admin.ekstrakurikuler.index')
+                ->with('success', "Ekstrakurikuler {$data['nama']} berhasil ditambahkan.");
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', "Gagal menambahkan ekstrakurikuler: " . $e->getMessage());
+        }
     }
 
     public function edit(Ekstrakurikuler $ekstrakurikuler)
@@ -59,19 +63,28 @@ class EkstrakurikulerController extends Controller
             'is_active'  => 'nullable|boolean',
         ]);
 
-        $data['is_active'] = $request->boolean('is_active');
-        $ekstrakurikuler->update($data);
+        try {
+            $data['is_active'] = $request->boolean('is_active');
+            $ekstrakurikuler->update($data);
 
-        return redirect()->route('admin.ekstrakurikuler.index')
-            ->with('success', "Ekstrakurikuler {$data['nama']} berhasil diperbarui.");
+            return redirect()->route('admin.ekstrakurikuler.index')
+                ->with('success', "Ekstrakurikuler {$data['nama']} berhasil diperbarui.");
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', "Gagal memperbarui ekstrakurikuler: " . $e->getMessage());
+        }
     }
 
     public function destroy(Ekstrakurikuler $ekstrakurikuler)
     {
-        $nama = $ekstrakurikuler->nama;
-        $ekstrakurikuler->delete();
-        return redirect()->route('admin.ekstrakurikuler.index')
-            ->with('success', "Ekstrakurikuler {$nama} berhasil dihapus.");
+        try {
+            $nama = $ekstrakurikuler->nama;
+            $ekstrakurikuler->delete();
+            return redirect()->route('admin.ekstrakurikuler.index')
+                ->with('success', "Ekstrakurikuler {$nama} berhasil dihapus.");
+        } catch (\Exception $e) {
+            return redirect()->route('admin.ekstrakurikuler.index')
+                ->with('error', "Gagal menghapus ekstrakurikuler: " . $e->getMessage());
+        }
     }
 
     public function show(Ekstrakurikuler $ekstrakurikuler)

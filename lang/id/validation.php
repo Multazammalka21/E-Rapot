@@ -135,6 +135,7 @@ return [
     ],
 
     'attributes' => [
+        // Siswa & Guru
         'nama_lengkap' => 'Nama Lengkap',
         'jenis_kelamin' => 'Jenis Kelamin',
         'nisn' => 'NISN',
@@ -147,5 +148,58 @@ return [
         'agama' => 'Agama',
         'alamat' => 'Alamat',
         'no_hp' => 'No HP',
+        'gelar_depan' => 'Gelar Depan',
+        'gelar_belakang' => 'Gelar Belakang',
+        'bidang_studi' => 'Bidang Studi',
+        'nama_ayah' => 'Nama Ayah',
+        'pekerjaan_ayah' => 'Pekerjaan Ayah',
+        'nama_ibu' => 'Nama Ibu',
+        'pekerjaan_ibu' => 'Pekerjaan Ibu',
+        'no_hp_ortu' => 'No HP Orang Tua',
+        'alamat_ortu' => 'Alamat Orang Tua',
+        'buat_akun' => 'Buat Akun',
+
+        // Mapel
+        'kode_mapel' => 'Kode Mata Pelajaran',
+        'nama_mapel' => 'Nama Mata Pelajaran',
+        'kelompok' => 'Kelompok Mata Pelajaran',
+        'kktp' => 'KKTP',
+        'bobot_sumatif_harian' => 'Bobot Sumatif Harian',
+        'bobot_sumatif_tengah' => 'Bobot Sumatif Tengah Semester',
+        'bobot_sumatif_akhir' => 'Bobot Sumatif Akhir Semester',
+        'is_active' => 'Status Aktif',
+
+        // Kelas
+        'tahun_ajaran_id' => 'Tahun Ajaran',
+        'wali_kelas_id' => 'Wali Kelas',
+        'nama_kelas' => 'Nama Kelas',
+        'tingkat' => 'Tingkat Kelas',
+        'kapasitas' => 'Kapasitas Kelas',
+        'siswa_id' => 'Siswa',
+
+        // Ekstrakurikuler
+        'nama' => 'Nama',
+        'deskripsi' => 'Deskripsi',
+        'pembina_id' => 'Pembina',
+
+        // Tahun Ajaran
+        'semester' => 'Semester',
+        'tanggal_mulai' => 'Tanggal Mulai',
+        'tanggal_selesai' => 'Tanggal Selesai',
+
+        // Penilaian (Guru)
+        'data.*.hadir' => 'Kehadiran',
+        'data.*.sakit' => 'Sakit',
+        'data.*.izin' => 'Izin',
+        'data.*.alpha' => 'Tanpa Keterangan (Alpha)',
+        'data.*.catatan' => 'Catatan Wali Kelas',
+
+        'nilai' => 'Nilai',
+        'nilai.*.siswa_id' => 'Siswa',
+        'nilai.*.nilai_sh' => 'Nilai Sumatif Harian',
+        'nilai.*.nilai_sts' => 'Nilai Sumatif Tengah Semester',
+        'nilai.*.nilai_sas' => 'Nilai Sumatif Akhir Semester',
+        'nilai.*.catatan_guru' => 'Catatan Guru',
+        'file_excel' => 'File Excel',
     ],
 ];

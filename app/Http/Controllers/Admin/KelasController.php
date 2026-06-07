@@ -48,10 +48,14 @@ class KelasController extends Controller
             ),
         ]);
 
-        Kelas::create($data);
+        try {
+            Kelas::create($data);
 
-        return redirect()->route('admin.kelas.index')
-            ->with('success', "Kelas {$data['nama_kelas']} berhasil ditambahkan.");
+            return redirect()->route('admin.kelas.index')
+                ->with('success', "Kelas {$data['nama_kelas']} berhasil ditambahkan.");
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', "Gagal menambahkan kelas: " . $e->getMessage());
+        }
     }
 
     public function edit(Kelas $kelas)
@@ -71,18 +75,27 @@ class KelasController extends Controller
             'kapasitas'       => 'required|integer|min:1|max:50',
         ]);
 
-        $kelas->update($data);
+        try {
+            $kelas->update($data);
 
-        return redirect()->route('admin.kelas.index')
-            ->with('success', "Kelas {$data['nama_kelas']} berhasil diperbarui.");
+            return redirect()->route('admin.kelas.index')
+                ->with('success', "Kelas {$data['nama_kelas']} berhasil diperbarui.");
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', "Gagal memperbarui kelas: " . $e->getMessage());
+        }
     }
 
     public function destroy(Kelas $kelas)
     {
-        $nama = $kelas->nama_kelas;
-        $kelas->delete();
-        return redirect()->route('admin.kelas.index')
-            ->with('success', "Kelas {$nama} berhasil dihapus.");
+        try {
+            $nama = $kelas->nama_kelas;
+            $kelas->delete();
+            return redirect()->route('admin.kelas.index')
+                ->with('success', "Kelas {$nama} berhasil dihapus.");
+        } catch (\Exception $e) {
+            return redirect()->route('admin.kelas.index')
+                ->with('error', "Gagal menghapus kelas: " . $e->getMessage());
+        }
     }
     public function show(Kelas $kelas)
     {

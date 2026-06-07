@@ -57,59 +57,67 @@ class SiswaController extends Controller
         ]);
 
         $userId = null;
-        if ($request->boolean('buat_akun')) {
-            // Auto Generate Email
-            if (empty($data['email'])) {
-                $email = $data['nisn'] . '@smpn1sby.sch.id';
-                $counter = 1;
-                $baseEmail = $data['nisn'];
-                while (User::withTrashed()->where('email', $email)->exists()) {
-                    $email = $baseEmail . '_' . $counter . '@smpn1sby.sch.id';
-                    $counter++;
+        $siswa = null;
+
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($request, $data, &$siswa, &$userId) {
+                if ($request->boolean('buat_akun')) {
+                    // Auto Generate Email
+                    if (empty($data['email'])) {
+                        $email = $data['nisn'] . '@smpn1sby.sch.id';
+                        $counter = 1;
+                        $baseEmail = $data['nisn'];
+                        while (User::withTrashed()->where('email', $email)->exists()) {
+                            $email = $baseEmail . '_' . $counter . '@smpn1sby.sch.id';
+                            $counter++;
+                        }
+                        $data['email'] = $email;
+                    }
+
+                    // Auto Generate Password
+                    if (empty($data['password'])) {
+                        $data['password'] = 'Siswa@1234';
+                    }
+
+                    $user = User::create([
+                        'name'      => $data['nama_lengkap'],
+                        'email'     => $data['email'],
+                        'password'  => Hash::make($data['password']),
+                        'role'      => 'siswa',
+                        'is_active' => true,
+                    ]);
+                    $userId = $user->id;
                 }
-                $data['email'] = $email;
-            }
 
-            // Auto Generate Password
-            if (empty($data['password'])) {
-                $data['password'] = 'Siswa@1234';
-            }
+                // Auto Generate NIS
+                $lastSiswa = Siswa::withTrashed()->orderByRaw('CAST(nis AS UNSIGNED) DESC')->first();
+                $nextNis = $lastSiswa && is_numeric($lastSiswa->nis) ? ((int)$lastSiswa->nis + 1) : 10001;
+                $data['nis'] = (string) $nextNis;
 
-            $user = User::create([
-                'name'      => $data['nama_lengkap'],
-                'email'     => $data['email'],
-                'password'  => Hash::make($data['password']),
-                'role'      => 'siswa',
-                'is_active' => true,
-            ]);
-            $userId = $user->id;
+                $siswa = Siswa::create(array_merge(
+                    collect($data)->except(['buat_akun','email','password'])->toArray(),
+                    ['user_id' => $userId, 'nis' => $data['nis']]
+                ));
+
+                // Otomatis daftar ke Pramuka (atau ekskul pertama) agar setiap siswa punya minimal 1 ekskul
+                $ta = TahunAjaran::where('is_active', true)->first();
+                $ekskulDefault = Ekstrakurikuler::where('nama', 'like', '%Pramuka%')->first() ?? Ekstrakurikuler::first();
+                if ($ta && $ekskulDefault) {
+                    EkstrakurikulerSiswa::create([
+                        'siswa_id'           => $siswa->id,
+                        'ekstrakurikuler_id' => $ekskulDefault->id,
+                        'tahun_ajaran_id'    => $ta->id,
+                        'predikat'           => null,
+                        'keterangan'         => 'Otomatis terdaftar',
+                    ]);
+                }
+            });
+
+            return redirect()->route('admin.siswa.index')
+                ->with('success', "Siswa {$data['nama_lengkap']} berhasil ditambahkan.");
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', "Gagal menambahkan data siswa: " . $e->getMessage());
         }
-
-        // Auto Generate NIS
-        $lastSiswa = Siswa::withTrashed()->orderByRaw('CAST(nis AS UNSIGNED) DESC')->first();
-        $nextNis = $lastSiswa && is_numeric($lastSiswa->nis) ? ((int)$lastSiswa->nis + 1) : 10001;
-        $data['nis'] = (string) $nextNis;
-
-        $siswa = Siswa::create(array_merge(
-            collect($data)->except(['buat_akun','email','password'])->toArray(),
-            ['user_id' => $userId, 'nis' => $data['nis']]
-        ));
-
-        // Otomatis daftar ke Pramuka (atau ekskul pertama) agar setiap siswa punya minimal 1 ekskul
-        $ta = TahunAjaran::where('is_active', true)->first();
-        $ekskulDefault = Ekstrakurikuler::where('nama', 'like', '%Pramuka%')->first() ?? Ekstrakurikuler::first();
-        if ($ta && $ekskulDefault) {
-            EkstrakurikulerSiswa::create([
-                'siswa_id'           => $siswa->id,
-                'ekstrakurikuler_id' => $ekskulDefault->id,
-                'tahun_ajaran_id'    => $ta->id,
-                'predikat'           => null,
-                'keterangan'         => 'Otomatis terdaftar',
-            ]);
-        }
-
-        return redirect()->route('admin.siswa.index')
-            ->with('success', "Siswa {$data['nama_lengkap']} berhasil ditambahkan.");
     }
 
     public function edit(Siswa $siswa)
@@ -137,20 +145,33 @@ class SiswaController extends Controller
             'alamat_ortu'    => 'nullable|string',
         ]);
 
-        $siswa->update($data);
-        $siswa->user?->update(['name' => $data['nama_lengkap']]);
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($siswa, $data) {
+                $siswa->update($data);
+                $siswa->user?->update(['name' => $data['nama_lengkap']]);
+            });
 
-        return redirect()->route('admin.siswa.index')
-            ->with('success', "Data siswa {$data['nama_lengkap']} berhasil diperbarui.");
+            return redirect()->route('admin.siswa.index')
+                ->with('success', "Data siswa {$data['nama_lengkap']} berhasil diperbarui.");
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', "Gagal memperbarui data siswa: " . $e->getMessage());
+        }
     }
 
     public function destroy(Siswa $siswa)
     {
-        $nama = $siswa->nama_lengkap;
-        $siswa->user?->delete();
-        $siswa->delete();
+        try {
+            $nama = $siswa->nama_lengkap;
+            \Illuminate\Support\Facades\DB::transaction(function () use ($siswa) {
+                $siswa->user?->delete();
+                $siswa->delete();
+            });
 
-        return redirect()->route('admin.siswa.index')
-            ->with('success', "Siswa {$nama} berhasil dihapus.");
+            return redirect()->route('admin.siswa.index')
+                ->with('success', "Siswa {$nama} berhasil dihapus.");
+        } catch (\Exception $e) {
+            return redirect()->route('admin.siswa.index')
+                ->with('error', "Gagal menghapus data siswa: " . $e->getMessage());
+        }
     }
 }

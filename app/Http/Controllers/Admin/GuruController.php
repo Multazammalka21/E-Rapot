@@ -47,38 +47,44 @@ class GuruController extends Controller
             'bidang_studi'   => 'nullable|string|max:80',
         ]);
 
-        // Auto Generate Email
-        if (empty($data['email'])) {
-            $emailName = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $data['nama_lengkap']));
-            $email = $emailName . '@smpn1sby.sch.id';
-            $counter = 1;
-            while (User::withTrashed()->where('email', $email)->exists()) {
-                $email = $emailName . $counter . '@smpn1sby.sch.id';
-                $counter++;
-            }
-            $data['email'] = $email;
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($request, &$data) {
+                // Auto Generate Email
+                if (empty($data['email'])) {
+                    $emailName = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $data['nama_lengkap']));
+                    $email = $emailName . '@smpn1sby.sch.id';
+                    $counter = 1;
+                    while (User::withTrashed()->where('email', $email)->exists()) {
+                        $email = $emailName . $counter . '@smpn1sby.sch.id';
+                        $counter++;
+                    }
+                    $data['email'] = $email;
+                }
+
+                // Auto Generate Password
+                if (empty($data['password'])) {
+                    $data['password'] = 'Guru@1234';
+                }
+
+                $user = User::create([
+                    'name'      => $data['nama_lengkap'],
+                    'email'     => $data['email'],
+                    'password'  => Hash::make($data['password']),
+                    'role'      => 'guru',
+                    'is_active' => true,
+                ]);
+
+                Guru::create(array_merge(
+                    collect($data)->except(['email','password'])->toArray(),
+                    ['user_id' => $user->id]
+                ));
+            });
+
+            return redirect()->route('admin.guru.index')
+                ->with('success', "Guru {$data['nama_lengkap']} berhasil ditambahkan.");
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', "Gagal menambahkan data guru: " . $e->getMessage());
         }
-
-        // Auto Generate Password
-        if (empty($data['password'])) {
-            $data['password'] = 'Guru@1234';
-        }
-
-        $user = User::create([
-            'name'      => $data['nama_lengkap'],
-            'email'     => $data['email'],
-            'password'  => Hash::make($data['password']),
-            'role'      => 'guru',
-            'is_active' => true,
-        ]);
-
-        Guru::create(array_merge(
-            collect($data)->except(['email','password'])->toArray(),
-            ['user_id' => $user->id]
-        ));
-
-        return redirect()->route('admin.guru.index')
-            ->with('success', "Guru {$data['nama_lengkap']} berhasil ditambahkan.");
     }
 
     public function edit(Guru $guru)
@@ -108,21 +114,33 @@ class GuruController extends Controller
         if (!empty($data['password'])) {
             $userUpdate['password'] = Hash::make($data['password']);
         }
-        $guru->user?->update($userUpdate);
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($guru, $data, $userUpdate) {
+                $guru->user?->update($userUpdate);
+                $guru->update(collect($data)->except(['email','password'])->toArray());
+            });
 
-        $guru->update(collect($data)->except(['email','password'])->toArray());
-
-        return redirect()->route('admin.guru.index')
-            ->with('success', "Data guru {$data['nama_lengkap']} berhasil diperbarui.");
+            return redirect()->route('admin.guru.index')
+                ->with('success', "Data guru {$data['nama_lengkap']} berhasil diperbarui.");
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', "Gagal memperbarui data guru: " . $e->getMessage());
+        }
     }
 
     public function destroy(Guru $guru)
     {
-        $nama = $guru->nama_lengkap;
-        $guru->user?->delete(); // soft delete user
-        $guru->delete();        // soft delete guru
+        try {
+            $nama = $guru->nama_lengkap;
+            \Illuminate\Support\Facades\DB::transaction(function () use ($guru) {
+                $guru->user?->delete(); // soft delete user
+                $guru->delete();        // soft delete guru
+            });
 
-        return redirect()->route('admin.guru.index')
-            ->with('success', "Guru {$nama} berhasil dihapus.");
+            return redirect()->route('admin.guru.index')
+                ->with('success', "Guru {$nama} berhasil dihapus.");
+        } catch (\Exception $e) {
+            return redirect()->route('admin.guru.index')
+                ->with('error', "Gagal menghapus data guru: " . $e->getMessage());
+        }
     }
 }

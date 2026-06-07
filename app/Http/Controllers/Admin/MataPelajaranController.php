@@ -45,11 +45,15 @@ class MataPelajaranController extends Controller
             return back()->withInput()->withErrors(['bobot_sumatif_harian' => "Total bobot harus 100 (saat ini: {$totalBobot})."]);
         }
 
-        $data['is_active'] = $request->boolean('is_active', true);
-        MataPelajaran::create($data);
+        try {
+            $data['is_active'] = $request->boolean('is_active', true);
+            MataPelajaran::create($data);
 
-        return redirect()->route('admin.mapel.index')
-            ->with('success', "Mata pelajaran {$data['nama_mapel']} berhasil ditambahkan.");
+            return redirect()->route('admin.mapel.index')
+                ->with('success', "Mata pelajaran {$data['nama_mapel']} berhasil ditambahkan.");
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', "Gagal menambahkan mata pelajaran: " . $e->getMessage());
+        }
     }
 
     public function edit(MataPelajaran $mapel)
@@ -75,18 +79,27 @@ class MataPelajaranController extends Controller
             return back()->withInput()->withErrors(['bobot_sumatif_harian' => "Total bobot harus 100 (saat ini: {$totalBobot})."]);
         }
 
-        $data['is_active'] = $request->boolean('is_active');
-        $mapel->update($data);
+        try {
+            $data['is_active'] = $request->boolean('is_active');
+            $mapel->update($data);
 
-        return redirect()->route('admin.mapel.index')
-            ->with('success', "Mata pelajaran {$data['nama_mapel']} berhasil diperbarui.");
+            return redirect()->route('admin.mapel.index')
+                ->with('success', "Mata pelajaran {$data['nama_mapel']} berhasil diperbarui.");
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', "Gagal memperbarui mata pelajaran: " . $e->getMessage());
+        }
     }
 
     public function destroy(MataPelajaran $mapel)
     {
-        $nama = $mapel->nama_mapel;
-        $mapel->delete();
-        return redirect()->route('admin.mapel.index')
-            ->with('success', "Mata pelajaran {$nama} berhasil dihapus.");
+        try {
+            $nama = $mapel->nama_mapel;
+            $mapel->delete();
+            return redirect()->route('admin.mapel.index')
+                ->with('success', "Mata pelajaran {$nama} berhasil dihapus.");
+        } catch (\Exception $e) {
+            return redirect()->route('admin.mapel.index')
+                ->with('error', "Gagal menghapus mata pelajaran: " . $e->getMessage());
+        }
     }
 }
